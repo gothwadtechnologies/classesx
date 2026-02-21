@@ -1,8 +1,11 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI } from "@google/genai";
+import { Settings, History, Sparkles, Send, ChevronLeft, MessageSquare, Trash2 } from 'lucide-react';
+import AiSettings from './AiSettings';
 
 const EduAIScreen: React.FC = () => {
+  const [view, setView] = useState<'CHAT' | 'SETTINGS' | 'HISTORY'>('CHAT');
   const [messages, setMessages] = useState<{ role: 'user' | 'ai'; text: string }[]>([
     { role: 'ai', text: 'Hello! I am your AI Study Assistant. Ask me anything about Physics, Chemistry, Maths, or Biology!' }
   ]);
@@ -11,8 +14,10 @@ const EduAIScreen: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    scrollRef.current?.scrollTo(0, scrollRef.current.scrollHeight);
-  }, [messages, isTyping]);
+    if (view === 'CHAT') {
+      scrollRef.current?.scrollTo(0, scrollRef.current.scrollHeight);
+    }
+  }, [messages, isTyping, view]);
 
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
@@ -23,11 +28,8 @@ const EduAIScreen: React.FC = () => {
     setIsTyping(true);
 
     try {
-      // Use process.env.API_KEY as per GenAI Guidelines.
-      // Initializing a new instance per request ensures the latest key is used.
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const response = await ai.models.generateContent({
-        // Using 'gemini-3-pro-preview' for Complex Text Tasks (Math/STEM/JEE/NEET reasoning)
         model: 'gemini-3-pro-preview',
         contents: userMsg,
         config: {
@@ -35,7 +37,6 @@ const EduAIScreen: React.FC = () => {
         }
       });
 
-      // Directly accessing the .text property of GenerateContentResponse.
       const aiText = response.text || "I'm sorry, I couldn't process that. Could you rephrase your question?";
       setMessages(prev => [...prev, { role: 'ai', text: aiText }]);
     } catch (error) {
@@ -46,13 +47,53 @@ const EduAIScreen: React.FC = () => {
     }
   };
 
+  if (view === 'SETTINGS') return <AiSettings onBack={() => setView('CHAT')} />;
+
+  if (view === 'HISTORY') return (
+    <div className="flex flex-col h-full bg-white">
+      <div className="p-4 bg-white border-b border-gray-100 flex items-center gap-3 shrink-0">
+        <button onClick={() => setView('CHAT')} className="p-2 bg-gray-50 rounded-xl text-gray-900 active:scale-95 transition-all">
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <div>
+          <h3 className="text-xs font-black uppercase tracking-tight">Chat History</h3>
+          <p className="text-[8px] font-bold text-gray-400 uppercase tracking-widest">Previous Sessions</p>
+        </div>
+      </div>
+      <div className="flex-1 overflow-y-auto p-6 flex flex-col items-center justify-center opacity-30">
+        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+          <History className="w-8 h-8 text-gray-400" />
+        </div>
+        <p className="text-[10px] font-black uppercase tracking-widest">No History Found</p>
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex flex-col h-[calc(100vh-220px)] bg-gray-50">
-      <div className="p-4 bg-white border-b border-gray-100 flex items-center gap-3">
-        <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center text-white shadow-sm">✨</div>
-        <div>
-          <h3 className="text-xs font-black uppercase tracking-tight">Edu AI Tutor</h3>
-          <p className="text-[8px] font-bold text-gray-400 uppercase tracking-widest">Powered by Gemini Pro</p>
+      <div className="p-4 bg-white border-b border-gray-100 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center text-white shadow-sm">
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-xs font-black uppercase tracking-tight">Edu AI Tutor</h3>
+            <p className="text-[8px] font-bold text-gray-400 uppercase tracking-widest">Powered by Gemini Pro</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-1">
+          <button 
+            onClick={() => setView('HISTORY')}
+            className="p-2 text-gray-400 hover:text-gray-900 transition-colors active:scale-90"
+          >
+            <History className="w-5 h-5" />
+          </button>
+          <button 
+            onClick={() => setView('SETTINGS')}
+            className="p-2 text-gray-400 hover:text-gray-900 transition-colors active:scale-90"
+          >
+            <Settings className="w-5 h-5" />
+          </button>
         </div>
       </div>
 
@@ -94,7 +135,7 @@ const EduAIScreen: React.FC = () => {
             disabled={isTyping}
             className="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center shadow-lg active:scale-95 transition-all disabled:opacity-50"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+            <Send className="w-5 h-5" />
           </button>
         </div>
       </div>
