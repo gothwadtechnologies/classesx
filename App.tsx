@@ -51,7 +51,13 @@ export default function App() {
             ...FIXED_SETTINGS,
             appName: data.appName || FIXED_SETTINGS.appName,
             logoEmoji: data.logoEmoji || FIXED_SETTINGS.logoEmoji,
-            underMaintenance: !!data.underMaintenance
+            underMaintenance: !!data.underMaintenance,
+            aiApiKey: data.aiApiKey || '',
+            aiModel1: data.aiModel1 || '',
+            aiModel2: data.aiModel2 || '',
+            aiModel3: data.aiModel3 || '',
+            aiModel4: data.aiModel4 || '',
+            aiModel5: data.aiModel5 || '',
           });
         }
       });
@@ -205,7 +211,15 @@ export default function App() {
         </>
       )}
 
-      {currentScreen === 'SETTINGS' && user && <SettingsScreen settings={settings} user={user} onBack={() => { setCurrentScreen('HOME'); setSettingsSubView('MAIN'); }} initialSubView={settingsSubView} />}
+      {currentScreen === 'SETTINGS' && user && (
+        <SettingsScreen 
+          settings={settings} 
+          user={user} 
+          onBack={() => { setCurrentScreen('HOME'); setSettingsSubView('MAIN'); }} 
+          initialSubView={settingsSubView} 
+          onOpenDrawer={() => setIsDrawerOpen(true)}
+        />
+      )}
       {currentScreen === 'BATCH_DETAILS' && user && selectedBatch && <BatchDetailsScreen batch={selectedBatch} settings={settings} user={user} onBack={() => setCurrentScreen('HOME')} />}
       {currentScreen === 'NOTIFICATIONS' && user && <NotificationsScreen user={user} settings={settings} onBack={() => setCurrentScreen('HOME')} />}
       {currentScreen === 'PROFILE' && user && <ProfileScreen user={user} settings={settings} onBack={() => setCurrentScreen('HOME')} onUpdateUser={(upd) => setUser({...user, ...upd})} />}

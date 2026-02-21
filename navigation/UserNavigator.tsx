@@ -63,7 +63,7 @@ const UserNavigator: React.FC<UserNavigatorProps> = ({
       switch (forcedResource) {
         case 'Library': return <LibraryScreen />;
         case 'PYQs': return <PYQScreen />;
-        case 'Edu AI': return <EduAIScreen />;
+        case 'Edu AI': return <EduAIScreen settings={settings} />;
         case 'Papers': return <SamplePaperScreen />;
         case 'Series': return <TestSeriesScreen />;
         case 'Notes': return <div className="p-12 text-center text-slate-500 font-black uppercase text-[10px] tracking-[0.2em] leading-loose">Notes Repository<br/>Coming Soon</div>;

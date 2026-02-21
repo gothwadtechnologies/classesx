@@ -4,15 +4,17 @@ import { GlobalSettings, UserRole, User } from '../types';
 import { doc, updateDoc, getDocs, collection } from 'firebase/firestore';
 import { db } from '../firebase';
 import { APP_NAME, BRANDING_FOOTER } from '../constants';
+import AiConfigScreen from './admin/AiConfigScreen';
 
 interface SettingsScreenProps {
   settings: GlobalSettings;
   onBack: () => void;
   user: User;
   initialSubView?: 'MAIN' | 'ABOUT' | 'AI' | 'PRIVACY';
+  onOpenDrawer?: () => void;
 }
 
-const SettingsScreen: React.FC<SettingsScreenProps> = ({ settings, onBack, user, initialSubView = 'MAIN' }) => {
+const SettingsScreen: React.FC<SettingsScreenProps> = ({ settings, onBack, user, initialSubView = 'MAIN', onOpenDrawer }) => {
   const [underMaintenance, setUnderMaintenance] = useState(settings.underMaintenance);
   const [isSaving, setIsSaving] = useState(false);
   const [activeSubView, setActiveSubView] = useState<'MAIN' | 'ABOUT' | 'AI' | 'PRIVACY'>(initialSubView);
@@ -20,6 +22,13 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ settings, onBack, user,
   useEffect(() => {
     setActiveSubView(initialSubView);
   }, [initialSubView]);
+
+  const handleBack = () => {
+    if (onOpenDrawer) {
+      onOpenDrawer();
+    }
+    onBack();
+  };
 
   const handleMaintenanceToggle = async () => {
     if (isSaving) return;
@@ -77,21 +86,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ settings, onBack, user,
   );
 
   if (activeSubView === 'AI') return (
-    <div className="flex-1 flex flex-col bg-white">
-      <div className="p-5 border-b border-gray-100 flex items-center gap-4 shrink-0"><button onClick={() => setActiveSubView('MAIN')} className="p-2 bg-gray-50 rounded-xl text-gray-900">←</button><h2 className="text-sm font-black uppercase tracking-tight">AI Configuration</h2></div>
-      <div className="flex-1 overflow-y-auto p-6 space-y-6 scroll-hide">
-        <div className="bg-purple-600 p-6 rounded-3xl text-white shadow-xl shadow-purple-100">
-           <div className="flex items-center gap-4 mb-4">
-             <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-2xl">✨</div>
-             <h4 className="font-black text-sm uppercase tracking-widest leading-none">Edu AI Logic</h4>
-           </div>
-           <p className="text-[10px] font-bold text-white/80 uppercase tracking-widest leading-relaxed">Model: Gemini 3 Pro Preview<br/>Context: JEE/NEET/Boards<br/>Response Mode: Concise Academic</p>
-        </div>
-        <div className="p-4 border-2 border-dashed border-gray-100 rounded-2xl">
-           <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest text-center">AI behavior is globally managed by the {BRANDING_FOOTER} core team.</p>
-        </div>
-      </div>
-    </div>
+    <AiConfigScreen settings={settings} onBack={() => setActiveSubView('MAIN')} />
   );
 
   if (activeSubView === 'PRIVACY') return (
@@ -109,7 +104,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ settings, onBack, user,
   return (
     <div className="flex-1 flex flex-col bg-white">
       <div className="p-5 border-b border-gray-100 flex items-center gap-4 shrink-0 bg-white">
-        <button onClick={onBack} className="p-2.5 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+        <button onClick={handleBack} className="p-2.5 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
           <svg className="w-5 h-5 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
         </button>
         <div>

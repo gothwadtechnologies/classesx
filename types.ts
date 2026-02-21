@@ -22,6 +22,14 @@ export interface GlobalSettings {
   primaryColor: string;
   backgroundColor: string;
   underMaintenance?: boolean;
+  // AI Configuration
+  aiApiKey?: string;
+  aiModel1?: string;
+  aiModel2?: string;
+  aiModel3?: string;
+  aiModel4?: string;
+  aiModel5?: string;
+  activeAiModelIndex?: number;
 }
 
 export type ClassLevel = '9th' | '10th' | '11th' | '12th' | 'Dropper';
