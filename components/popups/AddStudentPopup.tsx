@@ -10,9 +10,10 @@ interface AddStudentPopupProps {
   onConfirm: (data: any) => void;
   batches: Batch[];
   loading?: boolean;
+  initialData?: any | null;
 }
 
-const AddStudentPopup: React.FC<AddStudentPopupProps> = ({ isOpen, onClose, onConfirm, batches, loading }) => {
+const AddStudentPopup: React.FC<AddStudentPopupProps> = ({ isOpen, onClose, onConfirm, batches, loading, initialData }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -25,16 +26,27 @@ const AddStudentPopup: React.FC<AddStudentPopupProps> = ({ isOpen, onClose, onCo
 
   useEffect(() => {
     if (isOpen) {
-      setFormData({
-        name: '',
-        email: '',
-        password: '',
-        phone: '',
-        fatherName: '',
-      });
-      setSelectedBatches([]);
+      if (initialData) {
+        setFormData({
+          name: initialData.name || '',
+          email: initialData.email || '',
+          password: '', // Don't show password for editing
+          phone: initialData.phone || '',
+          fatherName: initialData.fatherName || '',
+        });
+        setSelectedBatches(initialData.batchIds || []);
+      } else {
+        setFormData({
+          name: '',
+          email: '',
+          password: '',
+          phone: '',
+          fatherName: '',
+        });
+        setSelectedBatches([]);
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, initialData]);
 
   const toggleBatch = (batchId: string) => {
     if (selectedBatches.includes(batchId)) {
@@ -45,8 +57,14 @@ const AddStudentPopup: React.FC<AddStudentPopupProps> = ({ isOpen, onClose, onCo
   };
 
   const handleSubmit = () => {
-    if (!formData.name || !formData.phone || !formData.email || !formData.password) return;
-    onConfirm({ ...formData, batchIds: selectedBatches });
+    if (!formData.name || !formData.phone || !formData.email) return;
+    if (!initialData && !formData.password) return;
+    
+    const payload: any = { ...formData, batchIds: selectedBatches };
+    if (initialData && !formData.password) {
+      delete payload.password;
+    }
+    onConfirm(payload);
   };
 
   return (
@@ -72,7 +90,9 @@ const AddStudentPopup: React.FC<AddStudentPopupProps> = ({ isOpen, onClose, onCo
                   <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 border border-blue-100">
                     <UserPlus className="w-5 h-5" />
                   </div>
-                  <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight">Add Student</h3>
+                  <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight">
+                    {initialData ? 'Edit Student' : 'Add Student'}
+                  </h3>
                 </div>
                 <button onClick={onClose} className="p-1 text-slate-300 hover:text-slate-600 transition-colors">
                   <X className="w-5 h-5" />
@@ -128,12 +148,14 @@ const AddStudentPopup: React.FC<AddStudentPopupProps> = ({ isOpen, onClose, onCo
 
                 {/* Security */}
                 <div className="space-y-1">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest px-1">Create Password</p>
+                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest px-1">
+                    {initialData ? 'New Password (Leave blank to keep current)' : 'Create Password'}
+                  </p>
                   <div className="relative">
                     <input 
                       type={showPassword ? "text" : "password"}
                       className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl font-bold text-xs outline-none text-slate-900 focus:border-blue-500 transition-all pr-10" 
-                      placeholder="Min 6 characters" 
+                      placeholder={initialData ? "Optional" : "Min 6 characters"} 
                       value={formData.password} 
                       onChange={e => setFormData({...formData, password: e.target.value})} 
                     />
@@ -175,13 +197,13 @@ const AddStudentPopup: React.FC<AddStudentPopupProps> = ({ isOpen, onClose, onCo
             <div className="p-4 bg-slate-50 border-t border-slate-100">
               <button 
                 onClick={handleSubmit} 
-                disabled={loading || !formData.name || !formData.phone || !formData.email || formData.password.length < 6} 
+                disabled={loading || !formData.name || !formData.phone || !formData.email || (!initialData && formData.password.length < 6)} 
                 className="w-full bg-blue-600 text-white font-black py-4 rounded-2xl text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-blue-500/20 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale"
               >
                 {loading ? (
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto" />
                 ) : (
-                  'Register Student'
+                  initialData ? 'Update Student' : 'Register Student'
                 )}
               </button>
             </div>

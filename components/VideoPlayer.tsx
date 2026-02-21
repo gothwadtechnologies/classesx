@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import { Play } from 'lucide-react';
 
 // Declaring the YouTube YT object on the window for TypeScript support
 declare global {
@@ -114,28 +115,48 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ url, title }) => {
   }, [videoId]);
 
   return (
-    <div className="w-full aspect-video bg-black relative group overflow-hidden shadow-2xl">
+    <div className="w-full aspect-video bg-slate-900 relative group overflow-hidden shadow-2xl rounded-b-[2rem]">
       {error ? (
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-6 text-center">
-          <span className="text-4xl mb-3">⚠️</span>
-          <p className="text-xs font-black uppercase tracking-widest opacity-60 mb-2">Playback Error</p>
-          <p className="text-sm font-bold">{error}</p>
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-8 text-center bg-slate-900/90 backdrop-blur-md">
+          <div className="w-16 h-16 bg-rose-500/20 rounded-full flex items-center justify-center mb-4 border border-rose-500/30">
+            <span className="text-2xl">⚠️</span>
+          </div>
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-rose-400 mb-2">Playback Error</p>
+          <p className="text-xs font-bold text-slate-300 max-w-[200px] leading-relaxed">{error}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="mt-6 px-6 py-2 bg-white text-slate-900 rounded-full text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all"
+          >
+            Retry
+          </button>
         </div>
       ) : videoId ? (
         <div id={`youtube-player-${videoId}`} className="w-full h-full" />
       ) : (
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-6 text-center opacity-40">
-          <div className="w-10 h-10 rounded-full border-4 border-white/20 border-t-white animate-spin mb-4" />
-          <p className="text-[10px] font-black uppercase tracking-[0.3em]">Loading Player...</p>
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-6 text-center bg-slate-900">
+          <div className="relative">
+            <div className="w-16 h-16 rounded-full border-4 border-white/10 border-t-blue-500 animate-spin" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Play className="w-6 h-6 text-white/20 fill-current" />
+            </div>
+          </div>
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] mt-6 text-blue-400 animate-pulse">Initializing Brain Engine</p>
         </div>
       )}
       
       {/* Overlay Title bar */}
       {title && !error && (
-        <div className="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
-          <h3 className="text-white text-[10px] font-black uppercase tracking-tight truncate">{title}</h3>
+        <div className="absolute top-0 left-0 right-0 p-6 bg-gradient-to-b from-slate-900/90 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none z-10 translate-y-[-10px] group-hover:translate-y-0">
+          <div className="flex items-center gap-3">
+            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
+            <h3 className="text-white text-[11px] font-black uppercase tracking-tight truncate drop-shadow-lg">{title}</h3>
+          </div>
         </div>
       )}
+
+      {/* Ambient Glow */}
+      <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-blue-500/10 rounded-full blur-[80px] pointer-events-none" />
+      <div className="absolute -top-20 -right-20 w-40 h-40 bg-purple-500/10 rounded-full blur-[80px] pointer-events-none" />
     </div>
   );
 };

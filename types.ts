@@ -53,6 +53,7 @@ export interface Notification {
 export interface Chapter {
   id: string;
   title: string;
+  startDate?: string;
   createdAt?: any;
 }
 
