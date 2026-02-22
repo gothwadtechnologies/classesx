@@ -96,20 +96,20 @@ const AdminNavigator: React.FC<AdminNavigatorProps> = ({
   };
 
   const mainTabs: { name: TabName; icon: React.ReactNode }[] = [
-    { name: 'Batches', icon: <LayoutGrid className="w-7 h-7" /> },
-    { name: 'Classes', icon: <Video className="w-7 h-7" /> },
-    { name: 'Students', icon: <Users className="w-7 h-7" /> },
-    { name: 'Tests', icon: <FileText className="w-7 h-7" /> },
-    { name: 'Fees', icon: <CreditCard className="w-7 h-7" /> },
-    { name: 'Attendance', icon: <CalendarCheck className="w-7 h-7" /> },
+    { name: 'Batches', icon: <LayoutGrid className="w-5 h-5" /> },
+    { name: 'Classes', icon: <Video className="w-5 h-5" /> },
+    { name: 'Students', icon: <Users className="w-5 h-5" /> },
+    { name: 'Tests', icon: <FileText className="w-5 h-5" /> },
+    { name: 'Fees', icon: <CreditCard className="w-5 h-5" /> },
+    { name: 'Attendance', icon: <CalendarCheck className="w-5 h-5" /> },
   ];
 
   const visibleResources = [
-    { id: 'Library', icon: <BookOpen className="w-6 h-6" />, label: 'LIB' },
-    { id: 'PYQs', icon: <History className="w-6 h-6" />, label: 'PYQ' },
-    { id: 'Edu AI', icon: <Sparkles className="w-6 h-6" />, label: 'AI' },
-    { id: 'Papers', icon: <FileCode className="w-6 h-6" />, label: 'PAPER' },
-    { id: 'Series', icon: <Trophy className="w-6 h-6" />, label: 'SERIES' },
+    { id: 'Library', icon: <BookOpen className="w-5 h-5" />, label: 'LIB' },
+    { id: 'PYQs', icon: <History className="w-5 h-5" />, label: 'PYQ' },
+    { id: 'Edu AI', icon: <Sparkles className="w-5 h-5" />, label: 'AI' },
+    { id: 'Papers', icon: <FileCode className="w-5 h-5" />, label: 'PAPER' },
+    { id: 'Series', icon: <Trophy className="w-5 h-5" />, label: 'SERIES' },
   ];
 
   const handleTabClick = (tabName: TabName) => {
@@ -129,44 +129,44 @@ const AdminNavigator: React.FC<AdminNavigatorProps> = ({
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-white relative">
       {/* Deep Blue Header - Slimmer */}
-      <header className="bg-blue-800 px-4 pt-4 pb-3 shadow-lg shadow-blue-900/20 shrink-0 z-[60] flex flex-col gap-2">
+      <header className="bg-blue-800 px-4 pt-3 pb-2 shadow-lg shadow-blue-900/20 shrink-0 z-[60] flex flex-col gap-2">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <button 
               onClick={onOpenDrawer} 
-              className="w-11 h-11 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center transition-all active:scale-90 text-white border border-white/10"
+              className="w-9 h-9 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center transition-all active:scale-90 text-white border border-white/10"
             >
-              <Menu className="w-6 h-6" />
+              <Menu className="w-5 h-5" />
             </button>
             <div className="flex flex-col">
-              <h1 className="text-lg font-black tracking-tight uppercase text-white leading-none">{APP_NAME}</h1>
-              <p className="text-[9px] font-bold text-blue-200 uppercase tracking-[0.2em] mt-1">Administrator</p>
+              <h1 className="text-base font-black tracking-tight uppercase text-white leading-none">{APP_NAME}</h1>
+              <p className="text-[8px] font-bold text-blue-200 uppercase tracking-[0.2em] mt-0.5">Administrator</p>
             </div>
           </div>
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
             <button 
               onClick={onToggleViewMode}
-              className="w-11 h-11 bg-white/10 rounded-full flex items-center justify-center text-white active:scale-90 transition-all border border-white/10"
+              className="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center text-white active:scale-90 transition-all border border-white/10"
               title="Switch to User View"
             >
-              <UserIcon className="w-5 h-5" />
+              <UserIcon className="w-4 h-4" />
             </button>
             <button 
               onClick={() => { setIsSearchActive(!isSearchActive); if(isSearchActive) setSearchQuery(''); }}
-              className={`w-11 h-11 rounded-full flex items-center justify-center transition-all active:scale-90 ${isSearchActive ? 'bg-white text-blue-800' : 'bg-white/10 text-white border border-white/10'}`}
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all active:scale-90 ${isSearchActive ? 'bg-white text-blue-800' : 'bg-white/10 text-white border border-white/10'}`}
             >
-              {isSearchActive ? <X className="w-5 h-5" /> : <Search className="w-5 h-5" />}
+              {isSearchActive ? <X className="w-4 h-4" /> : <Search className="w-4 h-4" />}
             </button>
             <button 
               onClick={onOpenNotifications} 
-              className="w-11 h-11 bg-white/10 rounded-full flex items-center justify-center text-white active:scale-90 transition-all relative border border-white/10"
+              className="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center text-white active:scale-90 transition-all relative border border-white/10"
             >
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-3 right-3 w-2 h-2 bg-rose-500 rounded-full border border-blue-800"></span>
+              <Bell className="w-4 h-4" />
+              <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-rose-500 rounded-full border border-blue-800"></span>
             </button>
             <button 
               onClick={onOpenProfile} 
-              className="w-11 h-11 rounded-full bg-white text-blue-800 font-black text-sm shadow-md active:scale-90 transition-all flex items-center justify-center border border-blue-200 overflow-hidden"
+              className="w-9 h-9 rounded-full bg-white text-blue-800 font-black text-xs shadow-md active:scale-90 transition-all flex items-center justify-center border border-blue-200 overflow-hidden"
             >
                {user.name.charAt(0)}
             </button>
@@ -174,7 +174,11 @@ const AdminNavigator: React.FC<AdminNavigatorProps> = ({
         </div>
 
         {isSearchActive && (
-          <div className="pb-0.5">
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="pb-0.5"
+          >
             <div className="relative">
               <input 
                 autoFocus
@@ -185,18 +189,18 @@ const AdminNavigator: React.FC<AdminNavigatorProps> = ({
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-          </div>
+          </motion.div>
         )}
       </header>
 
       {/* Sub-header for resources - Deeper Blue Background */}
       <div className="bg-blue-900 border-b border-blue-950 shrink-0 z-50 shadow-md">
-        <div className="flex items-center justify-between px-3 py-2.5 gap-2">
+        <div className="flex items-center justify-between px-3 py-1.5 gap-2">
           {visibleResources.map((res) => (
             <button 
               key={res.id} 
               onClick={() => handleResourceClick(res.id)}
-              className={`flex flex-col items-center justify-center flex-1 py-1.5 rounded-xl transition-all relative ${
+              className={`flex flex-col items-center justify-center flex-1 py-1 rounded-xl transition-all relative ${
                 forcedResource === res.id 
                   ? 'bg-white text-blue-900 shadow-lg scale-105 z-10' 
                   : 'text-blue-100 hover:bg-white/10'
@@ -210,14 +214,14 @@ const AdminNavigator: React.FC<AdminNavigatorProps> = ({
           ))}
           <button 
             onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
-            className={`flex flex-col items-center justify-center flex-1 py-2 rounded-xl transition-all relative ${
+            className={`flex flex-col items-center justify-center flex-1 py-1 rounded-xl transition-all relative ${
               isMoreMenuOpen 
                 ? 'bg-slate-900 text-white shadow-md' 
                 : 'text-blue-100 hover:bg-white/10'
             }`}
           >
-            <Zap className="w-6 h-6 mb-1" />
-            <span className={`text-[7px] font-black uppercase tracking-tighter ${isMoreMenuOpen ? 'text-white' : 'text-blue-300'}`}>
+            <Zap className="w-5 h-5 mb-0.5" />
+            <span className={`text-[6px] font-black uppercase tracking-tighter ${isMoreMenuOpen ? 'text-white' : 'text-blue-300'}`}>
               MORE
             </span>
           </button>
@@ -231,22 +235,23 @@ const AdminNavigator: React.FC<AdminNavigatorProps> = ({
       </main>
 
       {/* Deep Blue Bottom Navigation - Slimmer */}
-      <nav className="bg-blue-800 px-4 py-2 shrink-0 flex items-center justify-around z-[60] shadow-[0_-4px_20px_rgba(30,58,138,0.3)]">
+      <nav className="bg-blue-800 px-4 py-1.5 shrink-0 flex items-center justify-around z-[60] shadow-[0_-4px_20px_rgba(30,58,138,0.3)]">
         {mainTabs.map((tab) => (
           <button 
             key={tab.name} 
             onClick={() => handleTabClick(tab.name)} 
-            className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-xl transition-all relative ${
+            className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all relative ${
               (activeTab === tab.name && !forcedResource) ? 'text-white scale-105' : 'text-blue-300 opacity-60'
             }`}
           >
             {(activeTab === tab.name && !forcedResource) && (
-              <div 
-                className="absolute -top-1 w-8 h-0.5 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)]"
+              <motion.div 
+                layoutId="activeTab"
+                className="absolute -top-1 w-6 h-0.5 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)]"
               />
             )}
-            <div className="mb-1 transform">{tab.icon}</div>
-            <span className="text-[8px] font-black uppercase tracking-widest">{tab.name}</span>
+            <div className="mb-0.5 transform">{tab.icon}</div>
+            <span className="text-[7px] font-black uppercase tracking-widest">{tab.name}</span>
           </button>
         ))}
       </nav>
