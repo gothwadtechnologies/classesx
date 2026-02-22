@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Batch, User, UserRole } from '../../types.ts';
 import { CalendarCheck, ChevronLeft, ChevronRight, Check, X, Clock } from 'lucide-react';
+import { useAdminView } from '../../context/AdminViewContext.tsx';
 
 interface BatchAttendanceScreenProps {
   batch: Batch;
@@ -9,6 +10,7 @@ interface BatchAttendanceScreenProps {
 }
 
 const BatchAttendanceScreen: React.FC<BatchAttendanceScreenProps> = ({ batch, user }) => {
+  const { isAdminViewMode } = useAdminView();
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   
   // Mock data for students
@@ -19,7 +21,7 @@ const BatchAttendanceScreen: React.FC<BatchAttendanceScreenProps> = ({ batch, us
     { id: '4', name: 'Priya Verma', status: 'late' },
   ];
 
-  const isAdmin = user.role === UserRole.ADMIN;
+  const isAdmin = user.role === UserRole.ADMIN && isAdminViewMode;
 
   return (
     <div className="flex flex-col h-full bg-white">
@@ -53,13 +55,22 @@ const BatchAttendanceScreen: React.FC<BatchAttendanceScreenProps> = ({ batch, us
             </div>
 
             <div className="flex items-center gap-2">
-              <button className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${student.status === 'present' ? 'bg-emerald-500 text-white' : 'bg-slate-50 text-slate-300'}`}>
+              <button 
+                disabled={!isAdmin}
+                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${student.status === 'present' ? 'bg-emerald-500 text-white' : 'bg-slate-50 text-slate-300'}`}
+              >
                 <Check className="w-4 h-4" />
               </button>
-              <button className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${student.status === 'absent' ? 'bg-rose-500 text-white' : 'bg-slate-50 text-slate-300'}`}>
+              <button 
+                disabled={!isAdmin}
+                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${student.status === 'absent' ? 'bg-rose-500 text-white' : 'bg-slate-50 text-slate-300'}`}
+              >
                 <X className="w-4 h-4" />
               </button>
-              <button className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${student.status === 'late' ? 'bg-amber-500 text-white' : 'bg-slate-50 text-slate-300'}`}>
+              <button 
+                disabled={!isAdmin}
+                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${student.status === 'late' ? 'bg-amber-500 text-white' : 'bg-slate-50 text-slate-300'}`}
+              >
                 <Clock className="w-4 h-4" />
               </button>
             </div>

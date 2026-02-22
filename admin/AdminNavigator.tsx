@@ -17,23 +17,24 @@ import {
   Sparkles,
   FileCode,
   Trophy,
-  Users
+  Users,
+  User as UserIcon
 } from 'lucide-react';
-import { User, TabName, GlobalSettings, Batch, UserRole } from '../types.ts';
-import FeesScreen from '../screens/tabs/FeesScreen.tsx';
-import ClassesScreen from '../screens/tabs/ClassesScreen.tsx';
-import TestsScreen from '../screens/tabs/TestsScreen.tsx';
-import AttendanceScreen from '../screens/tabs/AttendanceScreen.tsx';
-import BatchesScreen from '../screens/tabs/BatchesScreen.tsx';
-import StudentsScreen from '../screens/tabs/StudentsScreen.tsx';
-import { APP_NAME, BRANDING_FOOTER } from '../constants.ts';
+import { User, TabName, GlobalSettings, Batch, UserRole } from '../common/types.ts';
+import FeesScreen from '../common/screens/tabs/FeesScreen.tsx';
+import ClassesScreen from '../common/screens/tabs/ClassesScreen.tsx';
+import TestsScreen from '../common/screens/tabs/TestsScreen.tsx';
+import AttendanceScreen from '../common/screens/tabs/AttendanceScreen.tsx';
+import BatchesScreen from '../common/screens/tabs/BatchesScreen.tsx';
+import StudentsScreen from '../common/screens/tabs/StudentsScreen.tsx';
+import { APP_NAME, BRANDING_FOOTER } from '../common/constants.ts';
 
 // Resource Screens
-import LibraryScreen from '../screens/resources/LibraryScreen.tsx';
-import PYQScreen from '../screens/resources/PYQScreen.tsx';
-import EduAIScreen from '../screens/resources/EduAIScreen.tsx';
-import SamplePaperScreen from '../screens/resources/SamplePaperScreen.tsx';
-import TestSeriesScreen from '../screens/resources/TestSeriesScreen.tsx';
+import LibraryScreen from '../common/screens/resources/LibraryScreen.tsx';
+import PYQScreen from '../common/screens/resources/PYQScreen.tsx';
+import EduAIScreen from '../common/screens/resources/EduAIScreen.tsx';
+import SamplePaperScreen from '../common/screens/resources/SamplePaperScreen.tsx';
+import TestSeriesScreen from '../common/screens/resources/TestSeriesScreen.tsx';
 
 interface AdminNavigatorProps {
   user: User;
@@ -46,6 +47,8 @@ interface AdminNavigatorProps {
   forcedResource?: string | null;
   onTabPress: () => void;
   onSelectResource: (id: string | null) => void;
+  isAdminViewMode: boolean;
+  onToggleViewMode: () => void;
 }
 
 const AdminNavigator: React.FC<AdminNavigatorProps> = ({ 
@@ -58,7 +61,9 @@ const AdminNavigator: React.FC<AdminNavigatorProps> = ({
   onLogout,
   forcedResource,
   onTabPress,
-  onSelectResource
+  onSelectResource,
+  isAdminViewMode,
+  onToggleViewMode
 }) => {
   const [activeTab, setActiveTab] = useState<TabName>('Batches');
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
@@ -91,20 +96,20 @@ const AdminNavigator: React.FC<AdminNavigatorProps> = ({
   };
 
   const mainTabs: { name: TabName; icon: React.ReactNode }[] = [
-    { name: 'Batches', icon: <LayoutGrid className="w-6 h-6" /> },
-    { name: 'Classes', icon: <Video className="w-6 h-6" /> },
-    { name: 'Students', icon: <Users className="w-6 h-6" /> },
-    { name: 'Tests', icon: <FileText className="w-6 h-6" /> },
-    { name: 'Fees', icon: <CreditCard className="w-6 h-6" /> },
-    { name: 'Attendance', icon: <CalendarCheck className="w-6 h-6" /> },
+    { name: 'Batches', icon: <LayoutGrid className="w-7 h-7" /> },
+    { name: 'Classes', icon: <Video className="w-7 h-7" /> },
+    { name: 'Students', icon: <Users className="w-7 h-7" /> },
+    { name: 'Tests', icon: <FileText className="w-7 h-7" /> },
+    { name: 'Fees', icon: <CreditCard className="w-7 h-7" /> },
+    { name: 'Attendance', icon: <CalendarCheck className="w-7 h-7" /> },
   ];
 
   const visibleResources = [
-    { id: 'Library', icon: <BookOpen className="w-5 h-5" />, label: 'LIB' },
-    { id: 'PYQs', icon: <History className="w-5 h-5" />, label: 'PYQ' },
-    { id: 'Edu AI', icon: <Sparkles className="w-5 h-5" />, label: 'AI' },
-    { id: 'Papers', icon: <FileCode className="w-5 h-5" />, label: 'PAPER' },
-    { id: 'Series', icon: <Trophy className="w-5 h-5" />, label: 'SERIES' },
+    { id: 'Library', icon: <BookOpen className="w-6 h-6" />, label: 'LIB' },
+    { id: 'PYQs', icon: <History className="w-6 h-6" />, label: 'PYQ' },
+    { id: 'Edu AI', icon: <Sparkles className="w-6 h-6" />, label: 'AI' },
+    { id: 'Papers', icon: <FileCode className="w-6 h-6" />, label: 'PAPER' },
+    { id: 'Series', icon: <Trophy className="w-6 h-6" />, label: 'SERIES' },
   ];
 
   const handleTabClick = (tabName: TabName) => {
@@ -129,32 +134,39 @@ const AdminNavigator: React.FC<AdminNavigatorProps> = ({
           <div className="flex items-center gap-4">
             <button 
               onClick={onOpenDrawer} 
-              className="w-9 h-9 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center transition-all active:scale-90 text-white border border-white/10"
+              className="w-11 h-11 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center transition-all active:scale-90 text-white border border-white/10"
             >
-              <Menu className="w-5 h-5" />
+              <Menu className="w-6 h-6" />
             </button>
             <div className="flex flex-col">
-              <h1 className="text-base font-black tracking-tight uppercase text-white leading-none">{APP_NAME}</h1>
-              <p className="text-[8px] font-bold text-blue-200 uppercase tracking-[0.2em] mt-0.5">Administrator</p>
+              <h1 className="text-lg font-black tracking-tight uppercase text-white leading-none">{APP_NAME}</h1>
+              <p className="text-[9px] font-bold text-blue-200 uppercase tracking-[0.2em] mt-1">Administrator</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
+            <button 
+              onClick={onToggleViewMode}
+              className="w-11 h-11 bg-white/10 rounded-full flex items-center justify-center text-white active:scale-90 transition-all border border-white/10"
+              title="Switch to User View"
+            >
+              <UserIcon className="w-5 h-5" />
+            </button>
             <button 
               onClick={() => { setIsSearchActive(!isSearchActive); if(isSearchActive) setSearchQuery(''); }}
-              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all active:scale-90 ${isSearchActive ? 'bg-white text-blue-800' : 'bg-white/10 text-white border border-white/10'}`}
+              className={`w-11 h-11 rounded-full flex items-center justify-center transition-all active:scale-90 ${isSearchActive ? 'bg-white text-blue-800' : 'bg-white/10 text-white border border-white/10'}`}
             >
-              {isSearchActive ? <X className="w-4 h-4" /> : <Search className="w-4 h-4" />}
+              {isSearchActive ? <X className="w-5 h-5" /> : <Search className="w-5 h-5" />}
             </button>
             <button 
               onClick={onOpenNotifications} 
-              className="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center text-white active:scale-90 transition-all relative border border-white/10"
+              className="w-11 h-11 bg-white/10 rounded-full flex items-center justify-center text-white active:scale-90 transition-all relative border border-white/10"
             >
-              <Bell className="w-4 h-4" />
-              <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-rose-500 rounded-full border border-blue-800"></span>
+              <Bell className="w-5 h-5" />
+              <span className="absolute top-3 right-3 w-2 h-2 bg-rose-500 rounded-full border border-blue-800"></span>
             </button>
             <button 
               onClick={onOpenProfile} 
-              className="w-9 h-9 rounded-full bg-white text-blue-800 font-black text-xs shadow-md active:scale-90 transition-all flex items-center justify-center border border-blue-200 overflow-hidden"
+              className="w-11 h-11 rounded-full bg-white text-blue-800 font-black text-sm shadow-md active:scale-90 transition-all flex items-center justify-center border border-blue-200 overflow-hidden"
             >
                {user.name.charAt(0)}
             </button>
@@ -162,11 +174,7 @@ const AdminNavigator: React.FC<AdminNavigatorProps> = ({
         </div>
 
         {isSearchActive && (
-          <motion.div 
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="pb-0.5"
-          >
+          <div className="pb-0.5">
             <div className="relative">
               <input 
                 autoFocus
@@ -177,7 +185,7 @@ const AdminNavigator: React.FC<AdminNavigatorProps> = ({
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-          </motion.div>
+          </div>
         )}
       </header>
 
@@ -202,14 +210,14 @@ const AdminNavigator: React.FC<AdminNavigatorProps> = ({
           ))}
           <button 
             onClick={() => setIsMoreMenuOpen(!isMoreMenuOpen)}
-            className={`flex flex-col items-center justify-center flex-1 py-1.5 rounded-xl transition-all relative ${
+            className={`flex flex-col items-center justify-center flex-1 py-2 rounded-xl transition-all relative ${
               isMoreMenuOpen 
                 ? 'bg-slate-900 text-white shadow-md' 
                 : 'text-blue-100 hover:bg-white/10'
             }`}
           >
-            <Zap className="w-5 h-5 mb-0.5" />
-            <span className={`text-[6px] font-black uppercase tracking-tighter ${isMoreMenuOpen ? 'text-white' : 'text-blue-300'}`}>
+            <Zap className="w-6 h-6 mb-1" />
+            <span className={`text-[7px] font-black uppercase tracking-tighter ${isMoreMenuOpen ? 'text-white' : 'text-blue-300'}`}>
               MORE
             </span>
           </button>
@@ -233,13 +241,12 @@ const AdminNavigator: React.FC<AdminNavigatorProps> = ({
             }`}
           >
             {(activeTab === tab.name && !forcedResource) && (
-              <motion.div 
-                layoutId="activeTab"
-                className="absolute -top-1 w-6 h-0.5 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)]"
+              <div 
+                className="absolute -top-1 w-8 h-0.5 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)]"
               />
             )}
-            <div className="mb-0.5 transform scale-90">{tab.icon}</div>
-            <span className="text-[7px] font-black uppercase tracking-widest">{tab.name}</span>
+            <div className="mb-1 transform">{tab.icon}</div>
+            <span className="text-[8px] font-black uppercase tracking-widest">{tab.name}</span>
           </button>
         ))}
       </nav>

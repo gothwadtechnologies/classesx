@@ -5,6 +5,7 @@ import { User, UserRole, Batch, ClassLevel } from '../../types';
 import { db } from '../../firebase';
 import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { BRANDING_FOOTER } from '../../constants';
+import { useAdminView } from '../../context/AdminViewContext';
 import AddBatchPopup from '../../components/popups/AddBatchPopup';
 import DeleteConfirmPopup from '../../components/popups/DeleteConfirmPopup';
 
@@ -15,6 +16,7 @@ interface BatchesScreenProps {
 }
 
 const BatchesScreen: React.FC<BatchesScreenProps> = ({ user, onSelectBatch, searchQuery = '' }) => {
+  const { isAdminViewMode } = useAdminView();
   const [batches, setBatches] = useState<Batch[]>([]);
   const [isAddingBatch, setIsAddingBatch] = useState(false);
   const [batchToEdit, setBatchToEdit] = useState<Batch | null>(null);
@@ -79,7 +81,7 @@ const BatchesScreen: React.FC<BatchesScreenProps> = ({ user, onSelectBatch, sear
           <h2 className="text-xl font-black text-slate-900 tracking-tight uppercase leading-none">Available Batches</h2>
           <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Managed By {BRANDING_FOOTER}</p>
         </div>
-        {user.role === UserRole.ADMIN && (
+        {user.role === UserRole.ADMIN && isAdminViewMode && (
           <button 
             onClick={() => setIsAddingBatch(true)}
             className="w-10 h-10 bg-white border border-slate-200 rounded-xl flex items-center justify-center shadow-sm active:scale-90 transition-all"
@@ -131,7 +133,7 @@ const BatchesScreen: React.FC<BatchesScreenProps> = ({ user, onSelectBatch, sear
                     </div>
                   </div>
                   
-                  {user.role === UserRole.ADMIN && (
+                  {user.role === UserRole.ADMIN && isAdminViewMode && (
                     <button className="p-2 text-slate-500 hover:text-white transition-colors active:scale-90">
                       <MoreVertical className="w-5 h-5" />
                     </button>
@@ -153,7 +155,7 @@ const BatchesScreen: React.FC<BatchesScreenProps> = ({ user, onSelectBatch, sear
                 {/* Footer: View Button and Management Actions */}
                 <div className="flex items-center justify-between pt-2 border-t border-white/5">
                   <div className="flex items-center gap-2">
-                    {user.role === UserRole.ADMIN && (
+                    {user.role === UserRole.ADMIN && isAdminViewMode && (
                       <>
                         <button 
                           onClick={() => setBatchToDelete(batch)}
@@ -175,7 +177,7 @@ const BatchesScreen: React.FC<BatchesScreenProps> = ({ user, onSelectBatch, sear
                     onClick={() => onSelectBatch(batch)}
                     className="flex items-center gap-2 bg-sky-500 text-white px-5 py-2.5 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-sky-500/20 active:scale-95 transition-all"
                   >
-                    Manage Batch
+                    {isAdminViewMode ? 'Manage Batch' : 'View Batch'}
                     <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>

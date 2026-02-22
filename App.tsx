@@ -1,18 +1,19 @@
 
 import React, { useState, useEffect } from 'react';
-import { User, UserRole, ScreenName, GlobalSettings, Batch } from './types.ts';
-import LoadingScreen from './screens/LoadingScreen.tsx';
-import RoleSelectionScreen from './screens/RoleSelectionScreen.tsx';
-import LoginScreen from './screens/LoginScreen.tsx';
-import SettingsScreen from './screens/SettingsScreen.tsx';
-import BatchDetailsScreen from './screens/BatchDetailsScreen.tsx';
-import NotificationsScreen from './screens/NotificationsScreen.tsx';
-import ProfileScreen from './screens/ProfileScreen.tsx';
-import AdminNavigator from './navigation/AdminNavigator.tsx';
-import UserNavigator from './navigation/UserNavigator.tsx';
-import AdminDrawer from './components/AdminDrawer.tsx';
-import UserDrawer from './components/UserDrawer.tsx';
-import { auth, db, isFirebaseAvailable } from './firebase.ts';
+import { User, UserRole, ScreenName, GlobalSettings, Batch } from './common/types.ts';
+import LoadingScreen from './common/screens/LoadingScreen.tsx';
+import RoleSelectionScreen from './common/screens/RoleSelectionScreen.tsx';
+import LoginScreen from './common/screens/LoginScreen.tsx';
+import SettingsScreen from './common/screens/SettingsScreen.tsx';
+import BatchDetailsScreen from './common/screens/BatchDetailsScreen.tsx';
+import NotificationsScreen from './common/screens/NotificationsScreen.tsx';
+import ProfileScreen from './common/screens/ProfileScreen.tsx';
+import AdminNavigator from './admin/AdminNavigator.tsx';
+import UserNavigator from './user/UserNavigator.tsx';
+import AdminDrawer from './admin/AdminDrawer.tsx';
+import UserDrawer from './user/UserDrawer.tsx';
+import { auth, db, isFirebaseAvailable } from './common/firebase.ts';
+import { useAdminView } from './common/context/AdminViewContext.tsx';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 
@@ -34,6 +35,7 @@ export default function App() {
   const [isDemoMode, setIsDemoMode] = useState(!isFirebaseAvailable);
   const [activeResource, setActiveResource] = useState<string | null>(null);
   const [settingsSubView, setSettingsSubView] = useState<'MAIN' | 'ABOUT' | 'AI' | 'PRIVACY'>('MAIN');
+  const { isAdminViewMode, setIsAdminViewMode } = useAdminView();
 
   useEffect(() => {
     if (!isFirebaseAvailable) {
@@ -146,7 +148,7 @@ export default function App() {
       
       {currentScreen === 'HOME' && user && (
         <>
-          {user.role === UserRole.ADMIN ? (
+          {user.role === UserRole.ADMIN && isAdminViewMode ? (
             <AdminNavigator 
               settings={settings} 
               user={user} 
@@ -158,6 +160,8 @@ export default function App() {
               onLogout={handleLogout}
               onTabPress={() => setActiveResource(null)}
               onSelectResource={(id) => setActiveResource(id)}
+              isAdminViewMode={isAdminViewMode}
+              onToggleViewMode={() => setIsAdminViewMode(!isAdminViewMode)}
             />
           ) : (
             <UserNavigator 
@@ -171,9 +175,11 @@ export default function App() {
               onLogout={handleLogout}
               onTabPress={() => setActiveResource(null)}
               onSelectResource={(id) => setActiveResource(id)}
+              isAdminViewMode={isAdminViewMode}
+              onToggleViewMode={() => setIsAdminViewMode(!isAdminViewMode)}
             />
           )}
-          {user.role === UserRole.ADMIN ? (
+          {user.role === UserRole.ADMIN && isAdminViewMode ? (
             <AdminDrawer 
               isOpen={isDrawerOpen} 
               onClose={() => setIsDrawerOpen(false)} 

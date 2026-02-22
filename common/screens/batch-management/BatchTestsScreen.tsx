@@ -4,6 +4,7 @@ import { Batch, User, Test, UserRole } from '../../types.ts';
 import { db } from '../../firebase.ts';
 import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestore';
 import { FileText, Plus, Calendar, Clock, ChevronRight } from 'lucide-react';
+import { useAdminView } from '../../context/AdminViewContext.tsx';
 
 interface BatchTestsScreenProps {
   batch: Batch;
@@ -11,6 +12,7 @@ interface BatchTestsScreenProps {
 }
 
 const BatchTestsScreen: React.FC<BatchTestsScreenProps> = ({ batch, user }) => {
+  const { isAdminViewMode } = useAdminView();
   const [tests, setTests] = useState<Test[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -40,7 +42,7 @@ const BatchTestsScreen: React.FC<BatchTestsScreenProps> = ({ batch, user }) => {
     return () => unsubscribe();
   }, [batch.id]);
 
-  const isAdmin = user.role === UserRole.ADMIN;
+  const isAdmin = user.role === UserRole.ADMIN && isAdminViewMode;
 
   return (
     <div className="flex flex-col h-full bg-white">

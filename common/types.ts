@@ -32,7 +32,13 @@ export interface GlobalSettings {
   activeAiModelIndex?: number;
 }
 
-export type ClassLevel = '9th' | '10th' | '11th' | '12th' | 'Dropper';
+export enum ClassLevel {
+  CLASS_9 = '9th',
+  CLASS_10 = '10th',
+  CLASS_11 = '11th',
+  CLASS_12 = '12th',
+  DROPPER = 'Dropper'
+}
 
 export interface Batch {
   id: string;
@@ -42,6 +48,9 @@ export interface Batch {
   studentIds: string[];
   thumbnailColor: string;
   subjects: string[];
+  description?: string;
+  subject?: string;
+  teacherIds?: string[];
   createdAt?: any;
 }
 
@@ -62,14 +71,19 @@ export interface Chapter {
   id: string;
   title: string;
   startDate?: string;
+  order?: number;
   createdAt?: any;
 }
 
 export interface Lecture {
   id: string;
   topicName: string;
+  title?: string;
   date: string;
   youtubeUrl?: string;
+  videoUrl?: string;
+  duration?: string;
+  order?: number;
   notesUrl?: string;
   dppUrl?: string;
   testId?: string;

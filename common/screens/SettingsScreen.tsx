@@ -4,7 +4,7 @@ import { GlobalSettings, UserRole, User } from '../types';
 import { doc, updateDoc, getDocs, collection } from 'firebase/firestore';
 import { db } from '../firebase';
 import { APP_NAME, BRANDING_FOOTER } from '../constants';
-import AiConfigScreen from './admin/AiConfigScreen';
+import AiConfigScreen from '../../admin/AiConfigScreen';
 
 interface SettingsScreenProps {
   settings: GlobalSettings;

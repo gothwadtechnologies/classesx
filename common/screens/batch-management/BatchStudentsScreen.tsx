@@ -4,6 +4,7 @@ import { Batch, User, UserRole } from '../../types.ts';
 import { db } from '../../firebase.ts';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { Users, Search, UserPlus, Mail, Phone, MoreVertical } from 'lucide-react';
+import { useAdminView } from '../../context/AdminViewContext.tsx';
 
 interface BatchStudentsScreenProps {
   batch: Batch;
@@ -11,6 +12,7 @@ interface BatchStudentsScreenProps {
 }
 
 const BatchStudentsScreen: React.FC<BatchStudentsScreenProps> = ({ batch, user }) => {
+  const { isAdminViewMode } = useAdminView();
   const [students, setStudents] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
@@ -84,9 +86,11 @@ const BatchStudentsScreen: React.FC<BatchStudentsScreenProps> = ({ batch, user }
                   </div>
                 </div>
               </div>
-              <button className="w-8 h-8 text-slate-300 hover:text-slate-600 transition-colors">
-                <MoreVertical className="w-5 h-5" />
-              </button>
+              {isAdminViewMode && (
+                <button className="w-8 h-8 text-slate-300 hover:text-slate-600 transition-colors">
+                  <MoreVertical className="w-5 h-5" />
+                </button>
+              )}
             </div>
           ))
         ) : (

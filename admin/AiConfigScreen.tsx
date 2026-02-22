@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Cpu, Save, ChevronLeft, Sparkles } from 'lucide-react';
-import { GlobalSettings } from '../../types';
+import { GlobalSettings } from '../common/types';
 import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { db } from '../common/firebase';
 
 interface AiConfigScreenProps {
   settings: GlobalSettings;

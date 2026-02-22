@@ -18,8 +18,8 @@ import {
   Trophy,
   MessageSquare
 } from 'lucide-react';
-import { User, UserRole } from '../types';
-import { BRANDING_FOOTER } from '../constants';
+import { User, UserRole } from '../common/types';
+import { BRANDING_FOOTER } from '../common/constants';
 
 interface AdminDrawerProps {
   isOpen: boolean;
@@ -37,12 +37,12 @@ const AdminDrawer: React.FC<AdminDrawerProps> = ({
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const shortcuts = [
-    { id: 'Edu AI', icon: <Sparkles className="w-4 h-4" />, label: 'AI Tutor' },
-    { id: 'Library', icon: <BookOpen className="w-4 h-4" />, label: 'Library' },
-    { id: 'PYQs', icon: <History className="w-4 h-4" />, label: 'PYQs' },
-    { id: 'Papers', icon: <FileCode className="w-4 h-4" />, label: 'Papers' },
-    { id: 'Series', icon: <Trophy className="w-4 h-4" />, label: 'Series' },
-    { id: 'Doubts', icon: <MessageSquare className="w-4 h-4" />, label: 'Doubts' },
+    { id: 'Edu AI', icon: <Sparkles className="w-5 h-5" />, label: 'AI Tutor' },
+    { id: 'Library', icon: <BookOpen className="w-5 h-5" />, label: 'Library' },
+    { id: 'PYQs', icon: <History className="w-5 h-5" />, label: 'PYQs' },
+    { id: 'Papers', icon: <FileCode className="w-5 h-5" />, label: 'Papers' },
+    { id: 'Series', icon: <Trophy className="w-5 h-5" />, label: 'Series' },
+    { id: 'Doubts', icon: <MessageSquare className="w-5 h-5" />, label: 'Doubts' },
   ];
 
   const handleAction = (type: 'resource' | 'settings' | 'profile', val?: any) => {
@@ -58,12 +58,12 @@ const AdminDrawer: React.FC<AdminDrawerProps> = ({
   return (
     <>
       <div 
-        className={`absolute inset-0 bg-black/60 backdrop-blur-[2px] transition-opacity z-[100] ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        className={`absolute inset-0 bg-black/60 backdrop-blur-[2px] z-[100] ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         onClick={() => { onClose(); setShowLogoutConfirm(false); }}
       />
 
       <div 
-        className={`absolute top-0 bottom-0 left-0 w-[75%] max-w-[280px] bg-blue-800 z-[110] transform transition-transform duration-300 ease-out shadow-2xl border-r border-blue-900 flex flex-col ${
+        className={`absolute top-0 bottom-0 left-0 w-[75%] max-w-[280px] bg-blue-800 z-[110] transform shadow-2xl border-r border-blue-900 flex flex-col ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -105,29 +105,29 @@ const AdminDrawer: React.FC<AdminDrawerProps> = ({
 
           <div className="space-y-1">
             <p className="text-[9px] font-black text-blue-200 uppercase tracking-widest px-2 mb-2">Management</p>
-            <DrawerItem icon={<UserIcon className="w-4 h-4" />} label="My Profile" onClick={() => handleAction('profile')} />
-            <DrawerItem icon={<BarChart3 className="w-4 h-4" />} label="Test Results" onClick={() => handleAction('resource', 'Results')} />
+            <DrawerItem icon={<UserIcon className="w-5 h-5" />} label="My Profile" onClick={() => handleAction('profile')} />
+            <DrawerItem icon={<BarChart3 className="w-5 h-5" />} label="Test Results" onClick={() => handleAction('resource', 'Results')} />
             <DrawerItem 
-              icon={<UserPlus className="w-4 h-4" />} 
+              icon={<UserPlus className="w-5 h-5" />} 
               label="Add Student" 
               onClick={() => handleAction('resource', 'Add Student')}
             />
-            <DrawerItem icon={<Settings className="w-4 h-4" />} label="Settings" onClick={() => handleAction('settings', 'MAIN')} />
+            <DrawerItem icon={<Settings className="w-5 h-5" />} label="Settings" onClick={() => handleAction('settings', 'MAIN')} />
           </div>
 
           <div className="h-px bg-white/10 mx-2 my-1" />
 
           <div className="space-y-1">
              <p className="text-[9px] font-black text-blue-200 uppercase tracking-widest px-2 mb-2">Support</p>
-             <DrawerItem icon={<Sparkles className="w-4 h-4" />} label="AI Config" onClick={() => handleAction('settings', 'AI')} />
-             <DrawerItem icon={<Info className="w-4 h-4" />} label="About Us" onClick={() => handleAction('settings', 'ABOUT')} />
-             <DrawerItem icon={<ShieldCheck className="w-4 h-4" />} label="Privacy" onClick={() => handleAction('settings', 'PRIVACY')} />
+             <DrawerItem icon={<Sparkles className="w-5 h-5" />} label="AI Config" onClick={() => handleAction('settings', 'AI')} />
+             <DrawerItem icon={<Info className="w-5 h-5" />} label="About Us" onClick={() => handleAction('settings', 'ABOUT')} />
+             <DrawerItem icon={<ShieldCheck className="w-5 h-5" />} label="Privacy" onClick={() => handleAction('settings', 'PRIVACY')} />
           </div>
 
           <div className="space-y-1">
              <p className="text-[9px] font-black text-blue-200 uppercase tracking-widest px-2 mb-2">Academic</p>
-             <DrawerItem icon={<BookMarked className="w-4 h-4" />} label="Modules" onClick={() => handleAction('resource', 'Notes')} />
-             <DrawerItem icon={<CalendarDays className="w-4 h-4" />} label="Schedules" />
+             <DrawerItem icon={<BookMarked className="w-5 h-5" />} label="Modules" onClick={() => handleAction('resource', 'Notes')} />
+             <DrawerItem icon={<CalendarDays className="w-5 h-5" />} label="Schedules" />
           </div>
         </div>
 
@@ -135,13 +135,13 @@ const AdminDrawer: React.FC<AdminDrawerProps> = ({
           {!showLogoutConfirm ? (
             <button 
               onClick={() => setShowLogoutConfirm(true)}
-              className="w-full flex items-center justify-between px-4 py-3 text-white bg-white/10 border border-white/20 rounded-xl transition-all active:scale-95 shadow-sm"
+              className="w-full flex items-center justify-between px-4 py-4 text-white bg-white/10 border border-white/20 rounded-xl transition-all active:scale-95 shadow-sm"
             >
               <div className="flex items-center gap-3">
-                <LogOut className="w-4 h-4" />
-                <span className="text-[9px] uppercase font-black tracking-widest">Sign Out</span>
+                <LogOut className="w-5 h-5" />
+                <span className="text-[10px] uppercase font-black tracking-widest">Sign Out</span>
               </div>
-              <ChevronRight className="w-3 h-3 opacity-30" />
+              <ChevronRight className="w-4 h-4 opacity-30" />
             </button>
           ) : (
             <div className="bg-blue-950 border border-blue-800 p-3 rounded-xl shadow-lg animate-in fade-in slide-in-from-bottom-2">

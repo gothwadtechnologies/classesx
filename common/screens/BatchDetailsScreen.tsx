@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { Batch, GlobalSettings, User, UserRole, Chapter, Lecture } from '../types.ts';
 import { db } from '../firebase.ts';
 import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import VideoPlayer from '../components/VideoPlayer.tsx';
+import VideoPlayer from '../VideoPlayer.tsx';
+import { useAdminView } from '../context/AdminViewContext.tsx';
 import { 
   BookOpen, 
   Users, 
@@ -41,6 +42,7 @@ import DeleteConfirmPopup from '../components/popups/DeleteConfirmPopup.tsx';
 type ViewState = 'MAIN' | 'SUBJECTS' | 'CHAPTERS' | 'LECTURES' | 'LECTURE_MANAGE' | 'LECTURE_WATCH' | 'STUDENTS' | 'TESTS' | 'RESULTS' | 'PYQS' | 'ATTENDANCE' | 'FEES';
 
 const BatchDetailsScreen: React.FC<{batch: Batch, settings: GlobalSettings, user: User, onBack: () => void}> = ({ batch, settings, user, onBack }) => {
+  const { isAdminViewMode } = useAdminView();
   const [currentView, setCurrentView] = useState<ViewState>('MAIN');
   const [selectedSubject, setSelectedSubject] = useState<string>('');
   const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(null);
@@ -61,7 +63,7 @@ const BatchDetailsScreen: React.FC<{batch: Batch, settings: GlobalSettings, user
   const [isLoading, setIsLoading] = useState(false);
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
 
-  const isAdmin = user.role === UserRole.ADMIN;
+  const isAdmin = user.role === UserRole.ADMIN && isAdminViewMode;
 
   useEffect(() => {
     if (currentView === 'CHAPTERS' && selectedSubject) {
