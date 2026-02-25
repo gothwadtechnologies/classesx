@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { X, UserPlus, Check, Eye, EyeOff, BookOpen } from 'lucide-react';
 import { Batch } from '../../types';
 

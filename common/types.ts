@@ -105,19 +105,38 @@ export interface Question {
   text: string;
   options: string[];
   correctOption: number; // index 0-3
+  subject?: string;
+  marks?: number;
 }
 
 export interface Test {
   id: string;
   title: string;
   date: string;
-  batchId?: string;
-  batchName?: string;
+  startTime: string;
+  duration: number; // in minutes
+  totalQuestions: number;
+  batchIds: string[];
+  batchNames?: string[];
+  subjectSyllabus: { [subject: string]: string };
+  questions: Question[];
+  status: 'upcoming' | 'live' | 'completed';
   totalMarks: number;
-  duration?: number; // in minutes
-  questions?: Question[];
-  score?: number;
+  marksPerCorrect: number;
+  negativeMarking: boolean;
+  marksPerWrong: number;
   createdAt?: any;
+}
+
+export interface TestResult {
+  id: string;
+  testId: string;
+  studentId: string;
+  studentName: string;
+  score: number;
+  totalMarks: number;
+  answers: { [questionId: string]: number };
+  completedAt: any;
 }
 
 export interface FeeRecord {
@@ -135,5 +154,5 @@ export interface AttendanceRecord {
   status: 'present' | 'absent' | 'late';
 }
 
-export type ScreenName = 'LOADING' | 'ROLE_SELECTION' | 'LOGIN' | 'HOME' | 'PROFILE' | 'SETTINGS' | 'ADMIN_MANAGE' | 'BATCH_DETAILS' | 'NOTIFICATIONS' | 'MAINTENANCE';
+export type ScreenName = 'LOADING' | 'ROLE_SELECTION' | 'LOGIN' | 'HOME' | 'PROFILE' | 'SETTINGS' | 'ADMIN_MANAGE' | 'BATCH_DETAILS' | 'NOTIFICATIONS' | 'MAINTENANCE' | 'TEST_BUILDER' | 'TEST_TAKER';
 export type TabName = 'Batches' | 'Classes' | 'Students' | 'Tests' | 'Fees' | 'Attendance';

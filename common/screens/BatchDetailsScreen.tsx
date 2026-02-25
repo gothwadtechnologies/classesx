@@ -5,6 +5,7 @@ import { db } from '../firebase.ts';
 import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import VideoPlayer from '../VideoPlayer.tsx';
 import { useAdminView } from '../context/AdminViewContext.tsx';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BookOpen, 
   Users, 
@@ -288,24 +289,49 @@ const BatchDetailsScreen: React.FC<{batch: Batch, settings: GlobalSettings, user
                         <p className="text-[8px] font-bold text-white/60 uppercase tracking-widest">Starts: {ch.startDate || 'TBA'}</p>
                       </div>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
-                  </button>
-                  {isAdmin && (
-                    <div className="absolute right-12 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                      <button 
-                        onClick={(e) => { e.stopPropagation(); setChapterToEdit(ch); }}
-                        className="p-2 text-white/60 hover:text-white transition-colors"
-                      >
-                        <Edit3 className="w-4 h-4" />
-                      </button>
-                      <button 
-                        onClick={(e) => { e.stopPropagation(); setChapterToDelete(ch); }}
-                        className="p-2 text-white/60 hover:text-white transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                    <div className="flex items-center gap-2">
+                      {isAdmin && (
+                        <div className="relative">
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); setActiveMenuId(activeMenuId === ch.id ? null : ch.id); }}
+                            className="p-2 text-white/60 hover:text-white transition-colors active:scale-90"
+                          >
+                            <MoreVertical className="w-4 h-4" />
+                          </button>
+                          
+                          <AnimatePresence>
+                            {activeMenuId === ch.id && (
+                              <>
+                                <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setActiveMenuId(null); }} />
+                                <motion.div 
+                                  initial={{ opacity: 0, scale: 0.9, y: -10 }}
+                                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                                  exit={{ opacity: 0, scale: 0.9, y: -10 }}
+                                  className="absolute right-0 mt-2 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-50 overflow-hidden"
+                                >
+                                  <button 
+                                    onClick={(e) => { e.stopPropagation(); setChapterToEdit(ch); setActiveMenuId(null); }}
+                                    className="w-full px-4 py-2.5 text-left flex items-center gap-2 hover:bg-slate-50 transition-colors"
+                                  >
+                                    <Edit3 className="w-3.5 h-3.5 text-blue-600" />
+                                    <span className="text-[9px] font-black text-slate-900 uppercase tracking-widest">Edit</span>
+                                  </button>
+                                  <button 
+                                    onClick={(e) => { e.stopPropagation(); setChapterToDelete(ch); setActiveMenuId(null); }}
+                                    className="w-full px-4 py-2.5 text-left flex items-center gap-2 hover:bg-rose-50 transition-colors border-t border-slate-50"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                                    <span className="text-[9px] font-black text-rose-600 uppercase tracking-widest">Delete</span>
+                                  </button>
+                                </motion.div>
+                              </>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      )}
+                      <ChevronRight className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
                     </div>
-                  )}
+                  </button>
                 </div>
               );
             })}
@@ -353,19 +379,42 @@ const BatchDetailsScreen: React.FC<{batch: Batch, settings: GlobalSettings, user
                     </div>
                     <div className="flex items-center gap-2">
                       {isAdmin && (
-                        <div className="flex items-center gap-1">
+                        <div className="relative">
                           <button 
-                            onClick={() => setLectureToEdit(lec)}
-                            className="p-2 text-white/60 hover:text-white transition-colors"
+                            onClick={() => setActiveMenuId(activeMenuId === lec.id ? null : lec.id)}
+                            className="p-2 text-white/60 hover:text-white transition-colors active:scale-90"
                           >
-                            <Edit3 className="w-4 h-4" />
+                            <MoreVertical className="w-4 h-4" />
                           </button>
-                          <button 
-                            onClick={() => setLectureToDelete(lec)}
-                            className="p-2 text-white/60 hover:text-white transition-colors"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          
+                          <AnimatePresence>
+                            {activeMenuId === lec.id && (
+                              <>
+                                <div className="fixed inset-0 z-40" onClick={() => setActiveMenuId(null)} />
+                                <motion.div 
+                                  initial={{ opacity: 0, scale: 0.9, y: -10 }}
+                                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                                  exit={{ opacity: 0, scale: 0.9, y: -10 }}
+                                  className="absolute right-0 mt-2 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-50 overflow-hidden"
+                                >
+                                  <button 
+                                    onClick={() => { setLectureToEdit(lec); setActiveMenuId(null); }}
+                                    className="w-full px-4 py-2.5 text-left flex items-center gap-2 hover:bg-slate-50 transition-colors"
+                                  >
+                                    <Edit3 className="w-3.5 h-3.5 text-blue-600" />
+                                    <span className="text-[9px] font-black text-slate-900 uppercase tracking-widest">Edit</span>
+                                  </button>
+                                  <button 
+                                    onClick={() => { setLectureToDelete(lec); setActiveMenuId(null); }}
+                                    className="w-full px-4 py-2.5 text-left flex items-center gap-2 hover:bg-rose-50 transition-colors border-t border-slate-50"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                                    <span className="text-[9px] font-black text-rose-600 uppercase tracking-widest">Delete</span>
+                                  </button>
+                                </motion.div>
+                              </>
+                            )}
+                          </AnimatePresence>
                         </div>
                       )}
                       <button 

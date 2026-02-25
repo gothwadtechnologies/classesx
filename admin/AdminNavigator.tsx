@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { 
   Menu, 
   Search, 
@@ -20,13 +20,14 @@ import {
   Users,
   User as UserIcon
 } from 'lucide-react';
-import { User, TabName, GlobalSettings, Batch, UserRole } from '../common/types.ts';
+import { User, TabName, GlobalSettings, Batch, UserRole, Test } from '../common/types.ts';
 import FeesScreen from '../common/screens/tabs/FeesScreen.tsx';
 import ClassesScreen from '../common/screens/tabs/ClassesScreen.tsx';
 import TestsScreen from '../common/screens/tabs/TestsScreen.tsx';
 import AttendanceScreen from '../common/screens/tabs/AttendanceScreen.tsx';
 import BatchesScreen from '../common/screens/tabs/BatchesScreen.tsx';
 import StudentsScreen from '../common/screens/tabs/StudentsScreen.tsx';
+import ResultsScreen from '../common/screens/tabs/ResultsScreen.tsx';
 import { APP_NAME, BRANDING_FOOTER } from '../common/constants.ts';
 
 // Resource Screens
@@ -49,6 +50,7 @@ interface AdminNavigatorProps {
   onSelectResource: (id: string | null) => void;
   isAdminViewMode: boolean;
   onToggleViewMode: () => void;
+  onSelectTest: (test: Test, screen: 'TEST_BUILDER' | 'TEST_TAKER') => void;
 }
 
 const AdminNavigator: React.FC<AdminNavigatorProps> = ({ 
@@ -63,7 +65,8 @@ const AdminNavigator: React.FC<AdminNavigatorProps> = ({
   onTabPress,
   onSelectResource,
   isAdminViewMode,
-  onToggleViewMode
+  onToggleViewMode,
+  onSelectTest
 }) => {
   const [activeTab, setActiveTab] = useState<TabName>('Batches');
   const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
@@ -79,7 +82,7 @@ const AdminNavigator: React.FC<AdminNavigatorProps> = ({
         case 'Papers': return <SamplePaperScreen />;
         case 'Series': return <TestSeriesScreen />;
         case 'Notes': return <div className="p-12 text-center text-slate-500 font-black uppercase text-[10px] tracking-[0.2em] leading-loose">Notes Repository<br/>Coming Soon</div>;
-        case 'Results': return <div className="p-12 text-center text-slate-500 font-black uppercase text-[10px] tracking-[0.2em] leading-loose">Performance Results Grid<br/>Coming Soon</div>;
+        case 'Results': return <ResultsScreen user={user} />;
         case 'Add Student': return <div className="p-12 text-center text-slate-500 font-black uppercase text-[10px] tracking-[0.2em] leading-loose">Management: Add Student<br/>Coming Soon</div>;
         default: break;
       }
@@ -88,7 +91,7 @@ const AdminNavigator: React.FC<AdminNavigatorProps> = ({
       case 'Batches': return <BatchesScreen user={user} onSelectBatch={onSelectBatch} searchQuery={searchQuery} />;
       case 'Classes': return <ClassesScreen user={user} />;
       case 'Students': return <StudentsScreen user={user} />;
-      case 'Tests': return <TestsScreen user={user} />;
+      case 'Tests': return <TestsScreen user={user} onSelectTest={onSelectTest} />;
       case 'Fees': return <FeesScreen user={user} />;
       case 'Attendance': return <AttendanceScreen user={user} />;
       default: return null;

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { AlertTriangle, X } from 'lucide-react';
 
 interface DeleteConfirmPopupProps {
@@ -15,40 +15,40 @@ const DeleteConfirmPopup: React.FC<DeleteConfirmPopupProps> = ({ isOpen, onClose
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
           />
           <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            initial={{ scale: 0.85, opacity: 0, y: 30 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className="relative bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl overflow-hidden"
+            exit={{ scale: 0.85, opacity: 0, y: 30 }}
+            className="relative bg-slate-900 w-full max-w-[320px] rounded-[2.5rem] shadow-2xl border border-white/10 overflow-hidden"
           >
             <div className="p-8 text-center">
-              <div className="w-20 h-20 bg-rose-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6">
-                <AlertTriangle className="w-10 h-10 text-rose-600" />
+              <div className="w-16 h-16 bg-rose-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-rose-500/10">
+                <AlertTriangle className="w-8 h-8 text-rose-500" />
               </div>
-              <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2">{title}</h3>
-              <p className="text-slate-500 text-xs font-bold leading-relaxed px-4">{message}</p>
+              <h3 className="text-xl font-black text-white uppercase tracking-tight mb-3">{title}</h3>
+              <p className="text-slate-400 text-[10px] font-bold leading-relaxed px-2 uppercase tracking-wide">{message}</p>
             </div>
             
-            <div className="flex border-t border-slate-100">
+            <div className="flex p-4 gap-3">
               <button
                 onClick={onClose}
-                className="flex-1 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:bg-slate-50 transition-colors"
+                className="flex-1 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-400 bg-white/5 hover:bg-white/10 transition-all active:scale-95"
               >
                 Cancel
               </button>
               <button
                 onClick={() => { onConfirm(); onClose(); }}
-                className="flex-1 py-6 text-[10px] font-black uppercase tracking-widest text-rose-600 hover:bg-rose-50 transition-colors border-l border-slate-100"
+                className="flex-1 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-white bg-rose-600 shadow-lg shadow-rose-600/20 hover:bg-rose-500 transition-all active:scale-95"
               >
-                Confirm Delete
+                Delete
               </button>
             </div>
           </motion.div>

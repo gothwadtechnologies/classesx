@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { User, UserRole, ScreenName, GlobalSettings, Batch } from './common/types.ts';
+import { User, UserRole, ScreenName, GlobalSettings, Batch, Test } from './common/types.ts';
 import LoadingScreen from './common/screens/LoadingScreen.tsx';
 import RoleSelectionScreen from './common/screens/RoleSelectionScreen.tsx';
 import LoginScreen from './common/screens/LoginScreen.tsx';
@@ -8,6 +8,8 @@ import SettingsScreen from './common/screens/SettingsScreen.tsx';
 import BatchDetailsScreen from './common/screens/BatchDetailsScreen.tsx';
 import NotificationsScreen from './common/screens/NotificationsScreen.tsx';
 import ProfileScreen from './common/screens/ProfileScreen.tsx';
+import TestBuilderScreen from './common/screens/test-management/TestBuilderScreen.tsx';
+import TestTakerScreen from './common/screens/test-management/TestTakerScreen.tsx';
 import AdminNavigator from './admin/AdminNavigator.tsx';
 import UserNavigator from './user/UserNavigator.tsx';
 import AdminDrawer from './admin/AdminDrawer.tsx';
@@ -15,7 +17,7 @@ import UserDrawer from './user/UserDrawer.tsx';
 import { auth, db, isFirebaseAvailable } from './common/firebase.ts';
 import { useAdminView } from './common/context/AdminViewContext.tsx';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, onSnapshot, updateDoc, serverTimestamp, addDoc, collection } from 'firebase/firestore';
 
 const FIXED_SETTINGS: GlobalSettings = {
   appName: "CLASSES X",
@@ -32,6 +34,7 @@ export default function App() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [settings, setSettings] = useState<GlobalSettings>(FIXED_SETTINGS);
   const [selectedBatch, setSelectedBatch] = useState<Batch | null>(null);
+  const [selectedTest, setSelectedTest] = useState<Test | null>(null);
   const [isDemoMode, setIsDemoMode] = useState(!isFirebaseAvailable);
   const [activeResource, setActiveResource] = useState<string | null>(null);
   const [settingsSubView, setSettingsSubView] = useState<'MAIN' | 'ABOUT' | 'AI' | 'PRIVACY'>('MAIN');
@@ -162,6 +165,10 @@ export default function App() {
               onSelectResource={(id) => setActiveResource(id)}
               isAdminViewMode={isAdminViewMode}
               onToggleViewMode={() => setIsAdminViewMode(!isAdminViewMode)}
+              onSelectTest={(test, screen) => {
+                setSelectedTest(test);
+                setCurrentScreen(screen);
+              }}
             />
           ) : (
             <UserNavigator 
@@ -177,6 +184,10 @@ export default function App() {
               onSelectResource={(id) => setActiveResource(id)}
               isAdminViewMode={isAdminViewMode}
               onToggleViewMode={() => setIsAdminViewMode(!isAdminViewMode)}
+              onSelectTest={(test, screen) => {
+                setSelectedTest(test);
+                setCurrentScreen(screen);
+              }}
             />
           )}
           {user.role === UserRole.ADMIN && isAdminViewMode ? (
@@ -229,6 +240,46 @@ export default function App() {
       {currentScreen === 'BATCH_DETAILS' && user && selectedBatch && <BatchDetailsScreen batch={selectedBatch} settings={settings} user={user} onBack={() => setCurrentScreen('HOME')} />}
       {currentScreen === 'NOTIFICATIONS' && user && <NotificationsScreen user={user} settings={settings} onBack={() => setCurrentScreen('HOME')} />}
       {currentScreen === 'PROFILE' && user && <ProfileScreen user={user} settings={settings} onBack={() => setCurrentScreen('HOME')} onUpdateUser={(upd) => setUser({...user, ...upd})} />}
+      
+      {currentScreen === 'TEST_BUILDER' && user && selectedTest && (
+        <TestBuilderScreen 
+          test={selectedTest} 
+          onBack={() => setCurrentScreen('HOME')} 
+          onSave={async (updatedTest) => {
+            if (!db) return;
+            try {
+              await updateDoc(doc(db, 'tests', updatedTest.id), {
+                questions: updatedTest.questions,
+                updatedAt: serverTimestamp()
+              });
+              setCurrentScreen('HOME');
+            } catch (e) {
+              alert("Failed to save test questions");
+            }
+          }} 
+        />
+      )}
+
+      {currentScreen === 'TEST_TAKER' && user && selectedTest && (
+        <TestTakerScreen 
+          test={selectedTest} 
+          studentId={user.uid}
+          studentName={user.name}
+          onBack={() => setCurrentScreen('HOME')} 
+          onSubmit={async (result) => {
+            if (!db) return;
+            try {
+              await addDoc(collection(db, 'testResults'), {
+                ...result,
+                completedAt: new Date().toISOString()
+              });
+              setCurrentScreen('HOME');
+            } catch (e) {
+              alert("Failed to submit test results");
+            }
+          }} 
+        />
+      )}
     </div>
   );
 }
