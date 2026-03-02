@@ -9,6 +9,7 @@ import { useAdminView } from '../../context/AdminViewContext';
 import AddBatchPopup from '../../components/popups/AddBatchPopup';
 import DeleteConfirmPopup from '../../components/popups/DeleteConfirmPopup';
 import { motion, AnimatePresence } from 'motion/react';
+import ManagementOptionsScreen from '../ManagementOptionsScreen.tsx';
 
 interface BatchesScreenProps {
   user: User;
@@ -149,40 +150,11 @@ const BatchesScreen: React.FC<BatchesScreenProps> = ({ user, onSelectBatch, sear
                     {user.role === UserRole.ADMIN && isAdminViewMode ? (
                       <div className="relative" onClick={(e) => e.stopPropagation()}>
                         <button 
-                          onClick={() => setActiveMenuId(activeMenuId === batch.id ? null : batch.id)}
+                          onClick={() => setActiveMenuId(batch.id)}
                           className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center text-white/40 transition-colors"
                         >
                           <MoreVertical className="w-4 h-4" />
                         </button>
-                        
-                        <AnimatePresence>
-                          {activeMenuId === batch.id && (
-                            <>
-                              <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setActiveMenuId(null); }} />
-                              <motion.div 
-                                initial={{ opacity: 0, scale: 0.9, x: 10 }}
-                                animate={{ opacity: 1, scale: 1, x: 0 }}
-                                exit={{ opacity: 0, scale: 0.9, x: 10 }}
-                                className="absolute right-0 top-full mt-2 w-32 bg-sky-500 rounded-2xl shadow-2xl border border-white/20 py-1.5 z-[100] overflow-hidden"
-                              >
-                                <button 
-                                  onClick={(e) => { e.stopPropagation(); setBatchToEdit(batch); setActiveMenuId(null); }}
-                                  className="w-full px-3 py-2.5 text-left flex items-center gap-2.5 hover:bg-white/10 transition-colors border-b border-white/5"
-                                >
-                                  <Edit3 className="w-3.5 h-3.5 text-white" />
-                                  <span className="text-[9px] font-black text-white uppercase tracking-widest">Edit</span>
-                                </button>
-                                <button 
-                                  onClick={(e) => { e.stopPropagation(); setBatchToDelete(batch); setActiveMenuId(null); }}
-                                  className="w-full px-3 py-2.5 text-left flex items-center gap-2.5 hover:bg-rose-500 transition-colors"
-                                >
-                                  <Trash2 className="w-3.5 h-3.5 text-white" />
-                                  <span className="text-[9px] font-black text-white uppercase tracking-widest">Delete</span>
-                                </button>
-                              </motion.div>
-                            </>
-                          )}
-                        </AnimatePresence>
                       </div>
                     ) : null}
 
@@ -230,6 +202,25 @@ const BatchesScreen: React.FC<BatchesScreenProps> = ({ user, onSelectBatch, sear
           })
         )}
       </div>
+
+      <AnimatePresence>
+        {activeMenuId && (
+          (() => {
+            const batch = batches.find(b => b.id === activeMenuId);
+            if (!batch) return null;
+            return (
+              <ManagementOptionsScreen 
+                title={batch.name}
+                subtitle={`${batch.classLevel} • ${batch.instructor || 'Staff'}`}
+                onBack={() => setActiveMenuId(null)}
+                onEdit={() => { setBatchToEdit(batch); setActiveMenuId(null); }}
+                onDelete={() => { setBatchToDelete(batch); setActiveMenuId(null); }}
+                onAbout={() => { alert(`Batch: ${batch.name}\nClass: ${batch.classLevel}\nInstructor: ${batch.instructor || 'Staff'}`); setActiveMenuId(null); }}
+              />
+            );
+          })()
+        )}
+      </AnimatePresence>
 
       <AddBatchPopup 
         isOpen={isAddingBatch || !!batchToEdit}

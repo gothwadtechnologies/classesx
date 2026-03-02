@@ -3,9 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { User, UserRole, Test, Batch } from '../../types';
 import { db } from '../../firebase';
 import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, updateDoc, doc, deleteDoc } from 'firebase/firestore';
-import { Plus, FileText, Calendar, Clock, Layers, Settings, Play, Trophy, ChevronRight, MoreVertical, Trash2, Edit3 } from 'lucide-react';
+import { Plus, FileText, Calendar, Clock, Layers, Settings, Play, Trophy, ChevronRight, MoreVertical, Trash2, Edit3, Info } from 'lucide-react';
 import AddTestPopup from '../../components/popups/AddTestPopup.tsx';
 import { motion, AnimatePresence } from 'motion/react';
+import ManagementOptionsScreen from '../ManagementOptionsScreen.tsx';
 
 interface TestsScreenProps {
   user: User;
@@ -164,46 +165,11 @@ const TestsScreen: React.FC<TestsScreenProps> = ({ user, onSelectTest }) => {
                   {user.role === UserRole.ADMIN ? (
                     <div className="relative" onClick={(e) => e.stopPropagation()}>
                       <button 
-                        onClick={() => setActiveMenu(activeMenu === test.id ? null : test.id)}
+                        onClick={() => setActiveMenu(test.id)}
                         className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center text-white/40 transition-colors"
                       >
                         <MoreVertical className="w-4 h-4" />
                       </button>
-                      <AnimatePresence>
-                        {activeMenu === test.id && (
-                          <>
-                            <div className="fixed inset-0 z-40" onClick={() => setActiveMenu(null)} />
-                            <motion.div 
-                              initial={{ opacity: 0, scale: 0.9, x: 10 }}
-                              animate={{ opacity: 1, scale: 1, x: 0 }}
-                              exit={{ opacity: 0, scale: 0.9, x: 10 }}
-                              className="absolute right-0 top-full mt-2 w-32 bg-sky-500 rounded-2xl shadow-2xl border border-white/20 py-1.5 z-[100] overflow-hidden"
-                            >
-                              <button 
-                                onClick={(e) => { e.stopPropagation(); setEditingTest(test); setIsAdding(true); setActiveMenu(null); }}
-                                className="w-full flex items-center gap-2.5 px-3 py-2.5 text-[9px] font-black uppercase tracking-widest text-white hover:bg-white/10 transition-colors border-b border-white/5"
-                              >
-                                <Edit3 className="w-3.5 h-3.5" />
-                                Edit
-                              </button>
-                              <button 
-                                onClick={(e) => { e.stopPropagation(); toggleStatus(test); setActiveMenu(null); }}
-                                className="w-full flex items-center gap-2.5 px-3 py-2.5 text-[9px] font-black uppercase tracking-widest text-white hover:bg-white/10 transition-colors border-b border-white/5"
-                              >
-                                <Play className="w-3.5 h-3.5" />
-                                Status
-                              </button>
-                              <button 
-                                onClick={(e) => { e.stopPropagation(); handleDelete(test.id); setActiveMenu(null); }}
-                                className="w-full flex items-center gap-2.5 px-3 py-2.5 text-[9px] font-black uppercase tracking-widest text-white hover:bg-rose-500 transition-colors"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                                Delete
-                              </button>
-                            </motion.div>
-                          </>
-                        )}
-                      </AnimatePresence>
                     </div>
                   ) : null}
                   
@@ -213,7 +179,7 @@ const TestsScreen: React.FC<TestsScreenProps> = ({ user, onSelectTest }) => {
                       test.status === 'live' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-white/10 text-white'
                     }`}
                   >
-                    {user.role === UserRole.ADMIN ? <Settings className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+                    <Play className="w-5 h-5" />
                   </button>
                 </div>
               </div>
@@ -221,6 +187,25 @@ const TestsScreen: React.FC<TestsScreenProps> = ({ user, onSelectTest }) => {
           ))
         )}
       </div>
+
+      <AnimatePresence>
+        {activeMenu && (
+          (() => {
+            const test = tests.find(t => t.id === activeMenu);
+            if (!test) return null;
+            return (
+              <ManagementOptionsScreen 
+                title={test.title}
+                subtitle={`${test.totalQuestions} Questions • ${test.date}`}
+                onBack={() => setActiveMenu(null)}
+                onEdit={() => { setEditingTest(test); setIsAdding(true); setActiveMenu(null); }}
+                onDelete={() => { handleDelete(test.id); setActiveMenu(null); }}
+                onAbout={() => { alert(`Test: ${test.title}\nStatus: ${test.status}\nQuestions: ${test.totalQuestions}`); setActiveMenu(null); }}
+              />
+            );
+          })()
+        )}
+      </AnimatePresence>
 
       <AddTestPopup 
         isOpen={isAdding}

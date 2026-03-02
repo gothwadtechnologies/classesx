@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { Eye, EyeOff, Cpu, Save, ChevronLeft, Sparkles } from 'lucide-react';
 import { GlobalSettings } from '../common/types';
 import { doc, updateDoc } from 'firebase/firestore';

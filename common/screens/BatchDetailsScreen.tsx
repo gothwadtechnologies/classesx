@@ -5,7 +5,8 @@ import { db } from '../firebase.ts';
 import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import VideoPlayer from '../VideoPlayer.tsx';
 import { useAdminView } from '../context/AdminViewContext.tsx';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
+import ManagementOptionsScreen from './ManagementOptionsScreen.tsx';
 import { 
   BookOpen, 
   Users, 
@@ -274,9 +275,9 @@ const BatchDetailsScreen: React.FC<{batch: Batch, settings: GlobalSettings, user
               
               return (
                 <div key={ch.id} className="relative">
-                  <button 
+                  <div 
                     onClick={() => { setSelectedChapter(ch); setCurrentView('LECTURES'); }} 
-                    className={`w-full ${colorClass} p-5 rounded-[2.5rem] shadow-lg flex items-center gap-4 active:scale-[0.98] transition-all text-left group relative overflow-hidden`}
+                    className={`w-full ${colorClass} p-5 rounded-[2.5rem] shadow-lg flex items-center gap-4 cursor-pointer active:scale-[0.98] transition-all text-left group relative overflow-hidden`}
                   >
                     <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-all" />
                     <div className="w-10 h-10 bg-white/20 text-white rounded-xl flex items-center justify-center text-lg border border-white/10 shrink-0">
@@ -293,45 +294,16 @@ const BatchDetailsScreen: React.FC<{batch: Batch, settings: GlobalSettings, user
                       {isAdmin && (
                         <div className="relative">
                           <button 
-                            onClick={(e) => { e.stopPropagation(); setActiveMenuId(activeMenuId === ch.id ? null : ch.id); }}
+                            onClick={(e) => { e.stopPropagation(); setActiveMenuId(ch.id); }}
                             className="p-2 text-white/60 hover:text-white transition-colors active:scale-90"
                           >
                             <MoreVertical className="w-4 h-4" />
                           </button>
-                          
-                          <AnimatePresence>
-                            {activeMenuId === ch.id && (
-                              <>
-                                <div className="fixed inset-0 z-40" onClick={(e) => { e.stopPropagation(); setActiveMenuId(null); }} />
-                                <motion.div 
-                                  initial={{ opacity: 0, scale: 0.9, y: -10 }}
-                                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                                  exit={{ opacity: 0, scale: 0.9, y: -10 }}
-                                  className="absolute right-0 mt-2 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-50 overflow-hidden"
-                                >
-                                  <button 
-                                    onClick={(e) => { e.stopPropagation(); setChapterToEdit(ch); setActiveMenuId(null); }}
-                                    className="w-full px-4 py-2.5 text-left flex items-center gap-2 hover:bg-slate-50 transition-colors"
-                                  >
-                                    <Edit3 className="w-3.5 h-3.5 text-blue-600" />
-                                    <span className="text-[9px] font-black text-slate-900 uppercase tracking-widest">Edit</span>
-                                  </button>
-                                  <button 
-                                    onClick={(e) => { e.stopPropagation(); setChapterToDelete(ch); setActiveMenuId(null); }}
-                                    className="w-full px-4 py-2.5 text-left flex items-center gap-2 hover:bg-rose-50 transition-colors border-t border-slate-50"
-                                  >
-                                    <Trash2 className="w-3.5 h-3.5 text-rose-600" />
-                                    <span className="text-[9px] font-black text-rose-600 uppercase tracking-widest">Delete</span>
-                                  </button>
-                                </motion.div>
-                              </>
-                            )}
-                          </AnimatePresence>
                         </div>
                       )}
                       <ChevronRight className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
                     </div>
-                  </button>
+                  </div>
                 </div>
               );
             })}
@@ -381,40 +353,11 @@ const BatchDetailsScreen: React.FC<{batch: Batch, settings: GlobalSettings, user
                       {isAdmin && (
                         <div className="relative">
                           <button 
-                            onClick={() => setActiveMenuId(activeMenuId === lec.id ? null : lec.id)}
+                            onClick={() => setActiveMenuId(lec.id)}
                             className="p-2 text-white/60 hover:text-white transition-colors active:scale-90"
                           >
                             <MoreVertical className="w-4 h-4" />
                           </button>
-                          
-                          <AnimatePresence>
-                            {activeMenuId === lec.id && (
-                              <>
-                                <div className="fixed inset-0 z-40" onClick={() => setActiveMenuId(null)} />
-                                <motion.div 
-                                  initial={{ opacity: 0, scale: 0.9, y: -10 }}
-                                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                                  exit={{ opacity: 0, scale: 0.9, y: -10 }}
-                                  className="absolute right-0 mt-2 w-32 bg-white rounded-xl shadow-2xl border border-slate-100 z-50 overflow-hidden"
-                                >
-                                  <button 
-                                    onClick={() => { setLectureToEdit(lec); setActiveMenuId(null); }}
-                                    className="w-full px-4 py-2.5 text-left flex items-center gap-2 hover:bg-slate-50 transition-colors"
-                                  >
-                                    <Edit3 className="w-3.5 h-3.5 text-blue-600" />
-                                    <span className="text-[9px] font-black text-slate-900 uppercase tracking-widest">Edit</span>
-                                  </button>
-                                  <button 
-                                    onClick={() => { setLectureToDelete(lec); setActiveMenuId(null); }}
-                                    className="w-full px-4 py-2.5 text-left flex items-center gap-2 hover:bg-rose-50 transition-colors border-t border-slate-50"
-                                  >
-                                    <Trash2 className="w-3.5 h-3.5 text-rose-600" />
-                                    <span className="text-[9px] font-black text-rose-600 uppercase tracking-widest">Delete</span>
-                                  </button>
-                                </motion.div>
-                              </>
-                            )}
-                          </AnimatePresence>
                         </div>
                       )}
                       <button 
@@ -432,31 +375,136 @@ const BatchDetailsScreen: React.FC<{batch: Batch, settings: GlobalSettings, user
         )}
 
         {currentView === 'LECTURE_WATCH' && selectedLecture && (
-           <div className="-mx-4 -mt-4 bg-slate-50 flex flex-col min-h-full">
-              <VideoPlayer url={selectedLecture.youtubeUrl} title={selectedLecture.topicName} />
-              <div className="p-4 space-y-4">
-                 <div className="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm">
-                    <h3 className="font-black text-slate-900 text-sm uppercase tracking-tight leading-tight">{selectedLecture.topicName}</h3>
-                    <p className="text-[8px] font-bold text-slate-400 uppercase mt-2 tracking-widest">Recorded: {selectedLecture.date}</p>
+           <div className="fixed inset-0 z-[100] bg-slate-50 flex flex-col">
+              <div className="bg-slate-900 p-4 flex items-center gap-4 shrink-0">
+                 <button 
+                    onClick={() => setCurrentView('LECTURES')} 
+                    className="p-2 bg-white/10 rounded-xl text-white active:scale-90 transition-all"
+                 >
+                    <ChevronRight className="w-5 h-5 rotate-180" />
+                 </button>
+                 <div className="min-w-0 flex-1">
+                    <h2 className="text-xs font-black text-white truncate uppercase tracking-tight">{selectedLecture.topicName}</h2>
+                    <p className="text-[8px] font-bold text-blue-400 uppercase tracking-widest mt-1">Video Lecture</p>
                  </div>
-                 <div className="grid grid-cols-3 gap-3">
-                    <button className="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm flex flex-col items-center gap-2 active:scale-95 transition-all">
-                      <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-xl">📄</div>
-                      <span className="text-[8px] font-black uppercase tracking-widest text-slate-600">Notes</span>
-                    </button>
-                    <button className="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm flex flex-col items-center gap-2 active:scale-95 transition-all">
-                      <div className="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-xl">📝</div>
-                      <span className="text-[8px] font-black uppercase tracking-widest text-slate-600">DPP</span>
-                    </button>
-                    <button className="bg-blue-600 text-white p-4 rounded-2xl shadow-lg shadow-blue-100 flex flex-col items-center gap-2 active:scale-95 transition-all">
-                      <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl">🎯</div>
-                      <span className="text-[8px] font-black uppercase tracking-widest text-white">Test</span>
-                    </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto">
+                 <VideoPlayer url={selectedLecture.youtubeUrl} title={selectedLecture.topicName} />
+                 <div className="p-4 space-y-4 pb-20">
+                    <div className="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm">
+                       <h3 className="font-black text-slate-900 text-sm uppercase tracking-tight leading-tight">{selectedLecture.topicName}</h3>
+                       <p className="text-[8px] font-bold text-slate-400 uppercase mt-2 tracking-widest">Recorded: {selectedLecture.date}</p>
+                    </div>
+                    <div className="grid grid-cols-1 gap-4">
+                       <div className="flex items-center justify-between px-2">
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Lecture Resources</p>
+                          <div className="flex gap-1">
+                             <div className="w-1 h-1 bg-blue-500 rounded-full" />
+                             <div className="w-1 h-1 bg-blue-300 rounded-full" />
+                             <div className="w-1 h-1 bg-blue-100 rounded-full" />
+                          </div>
+                       </div>
+
+                       <div className="grid grid-cols-2 gap-4">
+                          <button className="col-span-2 bg-white p-5 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 flex items-center gap-5 active:scale-[0.98] transition-all group overflow-hidden relative">
+                             <div className="absolute -right-4 -top-4 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-all" />
+                             <div className="w-14 h-14 bg-blue-600 rounded-[1.5rem] flex items-center justify-center text-white shadow-lg shadow-blue-600/20 shrink-0">
+                                <FileText className="w-7 h-7" />
+                             </div>
+                             <div className="flex-1 text-left">
+                                <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight">Download Notes</h4>
+                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">PDF • 4.2 MB • 24 Pages</p>
+                             </div>
+                             <div className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 group-hover:text-blue-600 transition-all">
+                                <ChevronRight className="w-5 h-5" />
+                             </div>
+                          </button>
+
+                          <button className="bg-amber-500 p-5 rounded-[2.5rem] shadow-xl shadow-amber-500/20 flex flex-col items-center gap-3 active:scale-[0.98] transition-all group relative overflow-hidden">
+                             <div className="absolute -right-2 -bottom-2 w-16 h-16 bg-white/10 rounded-full blur-xl" />
+                             <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white border border-white/10">
+                                <FileCode className="w-6 h-6" />
+                             </div>
+                             <div className="text-center">
+                                <h4 className="text-[10px] font-black text-white uppercase tracking-widest">Lecture DPP</h4>
+                                <p className="text-[8px] font-bold text-white/60 uppercase mt-1 tracking-tighter">15 Questions</p>
+                             </div>
+                          </button>
+
+                          <button className="bg-rose-600 p-5 rounded-[2.5rem] shadow-xl shadow-rose-600/20 flex flex-col items-center gap-3 active:scale-[0.98] transition-all group relative overflow-hidden">
+                             <div className="absolute -left-2 -bottom-2 w-16 h-16 bg-white/10 rounded-full blur-xl" />
+                             <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white border border-white/10">
+                                <LayoutGrid className="w-6 h-6" />
+                             </div>
+                             <div className="text-center">
+                                <h4 className="text-[10px] font-black text-white uppercase tracking-widest">Quick Test</h4>
+                                <p className="text-[8px] font-bold text-white/60 uppercase mt-1 tracking-tighter">Practice Now</p>
+                             </div>
+                          </button>
+                       </div>
+
+                       <div className="bg-slate-900 p-6 rounded-[2.5rem] border border-slate-800 shadow-2xl shadow-slate-900/40 relative overflow-hidden group">
+                          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl" />
+                          <div className="flex items-center gap-4">
+                             <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-blue-400">
+                                <BarChart3 className="w-5 h-5" />
+                             </div>
+                             <div className="flex-1">
+                                <h4 className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Learning Progress</h4>
+                                <div className="h-1.5 w-full bg-white/10 rounded-full mt-2 overflow-hidden">
+                                   <motion.div 
+                                      initial={{ width: 0 }}
+                                      animate={{ width: '65%' }}
+                                      className="h-full bg-blue-500 rounded-full"
+                                   />
+                                </div>
+                             </div>
+                             <span className="text-[10px] font-black text-white">65%</span>
+                          </div>
+                       </div>
+                    </div>
                  </div>
               </div>
            </div>
         )}
       </div>
+
+      <AnimatePresence>
+        {activeMenuId && (
+          (() => {
+            // Check if it's a chapter
+            const ch = chapters.find(c => c.id === activeMenuId);
+            if (ch) {
+              return (
+                <ManagementOptionsScreen 
+                  title={ch.title}
+                  subtitle={`Module • Starts: ${ch.startDate || 'TBA'}`}
+                  onBack={() => setActiveMenuId(null)}
+                  onEdit={() => { setChapterToEdit(ch); setActiveMenuId(null); }}
+                  onDelete={() => { setChapterToDelete(ch); setActiveMenuId(null); }}
+                  onAbout={() => { alert(`Module: ${ch.title}\nStarts: ${ch.startDate || 'TBA'}`); setActiveMenuId(null); }}
+                />
+              );
+            }
+            // Check if it's a lecture
+            const lec = lectures.find(l => l.id === activeMenuId);
+            if (lec) {
+              return (
+                <ManagementOptionsScreen 
+                  title={lec.topicName}
+                  subtitle={`Lecture • ${lec.date}`}
+                  onBack={() => setActiveMenuId(null)}
+                  onEdit={() => { setLectureToEdit(lec); setActiveMenuId(null); }}
+                  onDelete={() => { setLectureToDelete(lec); setActiveMenuId(null); }}
+                  onAbout={() => { alert(`Lecture: ${lec.topicName}\nDate: ${lec.date}\nURL: ${lec.youtubeUrl}`); setActiveMenuId(null); }}
+                />
+              );
+            }
+            return null;
+          })()
+        )}
+      </AnimatePresence>
 
       {/* Popups */}
       <AddChapterPopup 

@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { GoogleGenAI } from "@google/genai";
 import { Settings, History, Sparkles, Send, ChevronLeft, MessageSquare, Trash2, Cpu, ChevronDown } from 'lucide-react';
 import AiSettings from './AiSettings';

@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { GraduationCap, Users, ShieldCheck, ChevronRight, Settings, Info } from 'lucide-react';
 import { UserRole, GlobalSettings } from '../types';
 import { BRANDING_FOOTER } from '../constants';

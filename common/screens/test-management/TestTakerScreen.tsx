@@ -88,24 +88,24 @@ const TestTakerScreen: React.FC<TestTakerScreenProps> = ({ test, studentId, stud
   };
 
   return (
-    <div className="fixed inset-0 z-[150] bg-slate-50 flex flex-col">
+    <div className="fixed inset-0 z-[9999] bg-white flex flex-col">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-20">
+      <div className="bg-sky-500 px-6 py-4 flex items-center justify-between sticky top-0 z-20 shadow-md">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => setShowConfirmSubmit(true)}
-            className="w-10 h-10 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-600 transition-colors"
+            className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-white transition-colors active:scale-90"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <div>
-            <h2 className="text-lg font-black text-slate-900 uppercase tracking-tight">{test.title}</h2>
-            <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mt-0.5">Live Examination • {studentName}</p>
+          <div className="min-w-0">
+            <h2 className="text-lg font-black text-white uppercase tracking-tight truncate">{test.title}</h2>
+            <p className="text-[10px] font-black text-sky-100 uppercase tracking-widest mt-0.5 truncate">Live Examination • {studentName}</p>
           </div>
         </div>
 
         <div className={`flex items-center gap-3 px-5 py-2.5 rounded-2xl border-2 transition-all ${
-          timeLeft < 300 ? 'bg-red-50 border-red-200 text-red-600 animate-pulse' : 'bg-slate-50 border-slate-100 text-slate-900'
+          timeLeft < 300 ? 'bg-red-500 border-red-400 text-white animate-pulse' : 'bg-white/20 border-white/10 text-white'
         }`}>
           <Clock className="w-4 h-4" />
           <span className="text-sm font-black font-mono">{formatTime(timeLeft)}</span>

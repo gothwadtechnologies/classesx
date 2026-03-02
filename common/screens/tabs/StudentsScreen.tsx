@@ -1,12 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Search, UserPlus, Filter, MoreVertical, Phone, Mail, Edit3, Trash2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Users, Search, UserPlus, Filter, MoreVertical, Phone, Mail, Edit3, Trash2, Info } from 'lucide-react';
 import { User, UserRole, Batch } from '../../types';
 import { db } from '../../firebase';
 import { collection, query, where, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 import AddStudentPopup from '../../components/popups/AddStudentPopup';
 import DeleteConfirmPopup from '../../components/popups/DeleteConfirmPopup';
+import ManagementOptionsScreen from '../ManagementOptionsScreen.tsx';
 
 interface StudentsScreenProps {
   user: User;
@@ -164,43 +165,11 @@ const StudentsScreen: React.FC<StudentsScreenProps> = ({ user }) => {
               
               <div className="relative">
                 <button 
-                  onClick={() => setActiveMenuId(activeMenuId === student.uid ? null : student.uid)}
+                  onClick={(e) => { e.stopPropagation(); setActiveMenuId(student.uid); }}
                   className="w-8 h-8 text-slate-300 hover:text-slate-600 transition-colors flex items-center justify-center"
                 >
                   <MoreVertical className="w-5 h-5" />
                 </button>
-                
-                <AnimatePresence>
-                  {activeMenuId === student.uid && (
-                    <>
-                      <div 
-                        className="fixed inset-0 z-10" 
-                        onClick={() => setActiveMenuId(null)}
-                      />
-                      <motion.div 
-                        initial={{ opacity: 0, scale: 0.95, y: -10 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                        className="absolute right-0 mt-2 w-32 bg-white rounded-xl shadow-xl border border-slate-100 z-20 overflow-hidden"
-                      >
-                        <button 
-                          onClick={() => { setStudentToEdit(student); setActiveMenuId(null); }}
-                          className="w-full px-4 py-2.5 text-left text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-50 flex items-center gap-2"
-                        >
-                          <Edit3 className="w-3.5 h-3.5" />
-                          Edit
-                        </button>
-                        <button 
-                          onClick={() => { setStudentToDelete(student); setActiveMenuId(null); }}
-                          className="w-full px-4 py-2.5 text-left text-[10px] font-black uppercase tracking-widest text-rose-600 hover:bg-rose-50 flex items-center gap-2"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                          Delete
-                        </button>
-                      </motion.div>
-                    </>
-                  )}
-                </AnimatePresence>
               </div>
             </motion.div>
           ))
@@ -213,6 +182,25 @@ const StudentsScreen: React.FC<StudentsScreenProps> = ({ user }) => {
           </div>
         )}
       </div>
+
+      <AnimatePresence>
+        {activeMenuId && (
+          (() => {
+            const student = students.find(s => s.uid === activeMenuId);
+            if (!student) return null;
+            return (
+              <ManagementOptionsScreen 
+                title={student.name}
+                subtitle={`Student • ${student.phone}`}
+                onBack={() => setActiveMenuId(null)}
+                onEdit={() => { setStudentToEdit(student); setActiveMenuId(null); }}
+                onDelete={() => { setStudentToDelete(student); setActiveMenuId(null); }}
+                onAbout={() => { alert(`Student: ${student.name}\nPhone: ${student.phone}\nEmail: ${student.email || 'N/A'}`); setActiveMenuId(null); }}
+              />
+            );
+          })()
+        )}
+      </AnimatePresence>
 
       {/* Popups */}
       <AddStudentPopup 
