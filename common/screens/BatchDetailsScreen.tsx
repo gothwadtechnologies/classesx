@@ -361,7 +361,12 @@ const BatchDetailsScreen: React.FC<{batch: Batch, settings: GlobalSettings, user
                         </div>
                       )}
                       <button 
-                        onClick={() => { setSelectedLecture(lec); setCurrentView('LECTURE_WATCH'); }} 
+                        onClick={(e) => { 
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setSelectedLecture(lec); 
+                          setCurrentView('LECTURE_WATCH'); 
+                        }} 
                         className="bg-white text-slate-900 text-[9px] font-black px-4 py-2.5 rounded-xl uppercase shadow-lg active:scale-90 transition-all flex items-center gap-1.5"
                       >
                         <Play className="w-3 h-3 fill-current" />
@@ -373,9 +378,16 @@ const BatchDetailsScreen: React.FC<{batch: Batch, settings: GlobalSettings, user
               })}
            </div>
         )}
+      </div>
 
+      <AnimatePresence>
         {currentView === 'LECTURE_WATCH' && selectedLecture && (
-           <div className="fixed inset-0 z-[100] bg-slate-50 flex flex-col">
+           <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              className="fixed inset-0 z-[9999] bg-slate-50 flex flex-col"
+           >
               <div className="bg-slate-900 p-4 flex items-center gap-4 shrink-0">
                  <button 
                     onClick={() => setCurrentView('LECTURES')} 
@@ -466,9 +478,9 @@ const BatchDetailsScreen: React.FC<{batch: Batch, settings: GlobalSettings, user
                     </div>
                  </div>
               </div>
-           </div>
+           </motion.div>
         )}
-      </div>
+      </AnimatePresence>
 
       <AnimatePresence>
         {activeMenuId && (
